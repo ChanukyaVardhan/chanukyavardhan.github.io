@@ -1,0 +1,296 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"bgi",
+				"begin"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 444.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/Chanukya Vardhan/Desktop/GitHub IO/chanukyavardhan.github.io/_posts/2012-08-14-blog-post-1.md",
+		"/C/Users/Chanukya Vardhan/Desktop/GitHub IO/chanukyavardhan.github.io/_config.yml",
+		"/C/Users/Chanukya Vardhan/Desktop/GitHub IO/index.html",
+		"/C/Users/Chanukya Vardhan/Dropbox/GRE Prep/TOEFL.txt",
+		"/C/Users/Chanukya Vardhan/Dropbox/GRE Prep/GRE.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Deep Learning Specialization/5 - Sequence Models/Week 1/Assignments/Building a Recurrent Neural Network - Step by Step/data/input.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Deep Learning Specialization/5 - Sequence Models/Week 1/Assignments/Building a Recurrent Neural Network - Step by Step/shakespeare.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Deep Learning Specialization/5 - Sequence Models/Week 1/Assignments/Dinosaur Island -- Character-level language model/dinos.txt",
+		"/C/Corusera/CarlaSimulator/requirements.txt",
+		"/C/Games/Cricket_22_GoldBerg/Cricket 22/Read me - How To Install.txt",
+		"/C/Games/Cricket_22_GoldBerg/Cricket 22/CheckSums_xe.txt",
+		"/C/Games/Little_Fighter_2_Night_PC_Game/Read me - How To Install.txt",
+		"/C/Users/Chanukya Vardhan/.kaggle/kaggle.json",
+		"/C/Users/Chanukya Vardhan/Desktop/Getting-started-with-Tensorflow-2-master/week 4/config.json",
+		"/C/Users/Chanukya Vardhan/Desktop/Convolutional Neural Networks - Computer Vision/Week 3/Assignments/Car detection for Autonomous Driving/model_data/object_classes.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Convolutional Neural Networks - Computer Vision/Week 3/Assignments/Car detection for Autonomous Driving/model_data/coco_classes.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Convolutional Neural Networks - Computer Vision/Week 3/Assignments/Car detection for Autonomous Driving/model_data/yolo_anchors.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Convolutional Neural Networks - Computer Vision/Week 2/Assignments/Transfer Learning with MobileNet/test_utils.py",
+		"/C/Users/Chanukya Vardhan/Desktop/temp/coursera-deep-learning-specialization/setup.sh",
+		"/C/Users/Chanukya Vardhan/Desktop/temp/coursera-deep-learning-specialization-master/setup.sh",
+		"/C/Users/Chanukya Vardhan/Desktop/Deep Learning Specialization/C2 - Improving Deep Neural Networks Hyperparameter tuning, Regularization and Optimization/Week 1/Regularization/datasets/test_catvnoncat.h5",
+		"/C/Users/Chanukya Vardhan/Desktop/Neural Networks and Deep Learning/Week 2 - Neural Networks Basics/Logistic Regression as a Neural Network/lr_utils.py",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week5/Week5_1.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week4/Week4_1.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week3/machine-learning-ex2/ex2data2.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week3/machine-learning-ex2/ex2data1.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week3/Week3_2.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week3/Week3_1.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week2/Week2_2.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week2/Week2_1.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week2/machine-learning-ex1/featureNormalize.m",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week2/machine-learning-ex1/ex1data2.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week2/machine-learning-ex1-old/ex1/gradientDescent.m",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week2/machine-learning-ex1/ex1data1.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week2/machine-learning-ex1/ex1/computeCost.m",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week1/Week1_3.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week1/Week1_2.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/Week1/Week1_1.txt",
+		"/C/Chanukya/Aliases.cmd",
+		"/C/Users/Chanukya Vardhan/Desktop/Machine Learning/doubt.txt",
+		"/C/Chanukya/IIT/SEM05/CS305/Archi.txt",
+		"/C/Chanukya/MSET/Ubuntu/Songs/Telugu.txt",
+		"/C/Chanukya/Korea/Resume.out",
+		"/C/Users/Chanukya Vardhan/Desktop/Imp Questions.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Amazon.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Rippling.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Top Google Questions.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Google.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Final Questions.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/C++",
+		"/C/Users/Chanukya Vardhan/Desktop/Prep.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Korea.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/evolve.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/BPKPG1430C.json",
+		"/C/Users/Chanukya Vardhan/Desktop/best_list.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/NSC/Next Sem Courses.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/NSC/Decider.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Extras/Food.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Extras/Movie-list.txt",
+		"/C/Face Mask/train.py",
+		"/C/Face Mask/test.py",
+		"/C/Chanukya/IIT/IIT/3rd sem/CS215/HW03/ReadMe.txt.txt",
+		"/C/Chanukya/IIT/SEM06/CS386/Assignment 3/140050043/neural-network.py",
+		"/C/Users/Chanukya Vardhan/AppData/Local/Temp/Rar$DIa0.364/README.md",
+		"/C/Chanukya/IIT/SEM04/CS254/Pirates/Test_README.txt",
+		"/C/Chanukya/IIT/SEM06/CS316/Assignment 6/group_09/README",
+		"/C/Chanukya/IIT/SEM07/CS747/FILA_project/project_code/delete.txt",
+		"/C/Chanukya/IIT/SEM07/CS475/Assignments/Assignment 1/Assignment1.cpp",
+		"/C/Users/Chanukya Vardhan/Dropbox/GRE Prep/Delete.txt",
+		"/C/Users/Chanukya Vardhan/AppData/Local/Temp/Rar$DIa0.420/readme.txt",
+		"/C/Users/Chanukya Vardhan/AppData/Local/Temp/Rar$DIa0.875/ExampleInstrumentedTest.java",
+		"/C/Chanukya/IIT/SEM05/CS387/Lab09/140050043_140050059.txt",
+		"/C/Chanukya/IIT/SEM05/CS387/latestWinterProject/marketing_android_app/README.md",
+		"/C/Chanukya/IIT/SEM06/CS302/Compilers.txt",
+		"/C/Chanukya/IIT/SEM06/CS316/Assignment 3/group_09/ast.cc",
+		"/C/Users/Chanukya Vardhan/AppData/Local/Temp/Rar$DIa0.097/grammar.txt",
+		"/C/Chanukya/IIT/SEM06/CS316/Assignment 1/Group_09/scanner.ll",
+		"/C/Chanukya/IIT/SEM06/CS316/Assignment 1/Group_09/parser.yy",
+		"/C/Chanukya/IIT/SEM06/CS316/Assignment 1/Group_09/CodeOfHonour.txt",
+		"/C/Chanukya/IIT/IIT/4th sem/CS226 - DLD/prjct/Explanation.txt",
+		"/C/Chanukya/IIT/IIT/4th sem/CS226 - DLD/prjct/shouldWOrk.tex",
+		"/C/Chanukya/IIT/SEM04/CS254/Pirates/others/Others_README.txt",
+		"/C/Chanukya/IIT/SEM05/CS317/DB.txt",
+		"/C/Chanukya/IIT/SEM05/CS387/Lab07/SimpleApp.java",
+		"/C/Chanukya/IIT/SEM05/CS387/Lab04/140050043.java",
+		"/C/Chanukya/IIT/SEM05/CS387/Lab03/q11.txt",
+		"/C/Users/Chanukya Vardhan/Dropbox/GRE Prep/Every individual in a society has a responsibility to obey just laws and to disobey and resist unjust.txt",
+		"/C/Users/Chanukya Vardhan/Dropbox/GRE Prep/Issue AWA.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/essay2 (1).txt",
+		"/C/Users/Chanukya Vardhan/Desktop/essay1 (1).txt",
+		"/C/Users/Chanukya Vardhan/Desktop/essay2.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/essay1.txt",
+		"/C/Users/Chanukya Vardhan/Dropbox/GRE Prep/The Official Guide to the TOEFL Test_2018, 5th DVD-ROM/ReadMe.txt",
+		"/C/Chanukya/Pokemon/Pokemon The Last Fire Red/password.txt",
+		"/C/Users/Chanukya Vardhan/Dropbox/Payslips/Comp Summary.txt",
+		"/C/Chanukya/Pokemon/Pokemon Gaia/README.txt",
+		"/C/Chanukya/Grand_Theft_Auto_v/How to run setup.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Medallion.txt",
+		"/C/Users/Chanukya Vardhan/AppData/Local/Google/Chrome/User Data/Default/Bookmarks - Copy",
+		"/C/Chanukya/IIT/ML/doubt.txt",
+		"/C/Users/Chanukya Vardhan/AppData/Local/Google/Chrome/User Data/Default/Bookmarks",
+		"/C/Users/Chanukya Vardhan/Desktop/ITR1_2019/Read Me.txt",
+		"/C/Chanukya/IIT/IIT/3rd sem/CS213/Problems_1.txt",
+		"/C/Chanukya/IIT/SEM03/References/notes/lca.txt",
+		"/C/Chanukya/Pokemon/Pokemon Blaze Black 2/Pokemon Blaze Black 2 - Complete/Documents/Current State.txt",
+		"/C/Users/Chanukya Vardhan/Downloads/Justice.League.Throne.of.Atlantis.2015.1080p.BluRay.H264.AAC-RARBG/RARBG.txt",
+		"/C/Chanukya/IIT/IIT/3rd sem/CS251/labs/Django/UpdatedReadme.txt",
+		"/C/Chanukya/IIT/Placement Proofs/Branch Change Allocation/feature_doc.txt",
+		"/C/Chanukya/IIT/Placement Proofs/Branch Change Allocation/readme.txt",
+		"/C/Chanukya/IIT/ML/Week1/Week1_2.txt",
+		"/C/Chanukya/IIT/ML/Week5/Week5_1.txt",
+		"/C/Chanukya/IIT/ML/Week4/Week4_1.txt",
+		"/C/Chanukya/IIT/ML/Week3/Week3_2.txt",
+		"/C/Chanukya/IIT/ML/Week3/Week3_1.txt",
+		"/C/Chanukya/IIT/ML/Week2/Week2_2.txt",
+		"/C/Chanukya/IIT/ML/Week2/Week2_1.txt",
+		"/C/Chanukya/IIT/ML/Week1/Week1_3.txt",
+		"/C/Chanukya/IIT/ML/Week1/Week1_1.txt",
+		"/C/Chanukya/IIT/SEM07/CS747/FILA_project/project/projectexperiment.sh",
+		"/C/Users/Chanukya Vardhan/Desktop/Football/PSV.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/INDW-vs-BANW.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/INDW-vs-BANW.jpg",
+		"/C/Users/Chanukya Vardhan/Desktop/Jumpstart Your Learning/Excel/Shortcuts.txt",
+		"/C/Users/Chanukya Vardhan/Downloads/Setups/UltraISO_Premium_Edition_9.6.6.3300_Multilingual/Serial Key.txt",
+		"/C/Users/Chanukya Vardhan/Desktop/Extras/w/Images/samanta.html",
+		"/C/Users/Chanukya Vardhan/Documents/Ghost Games/Need for Speed(TM) Rivals/settings/PROFILEOPTIONS_profile",
+		"/C/DC/FIFA 15 by xatab/How to install/How to run setup.txt",
+		"/C/DC/FIFA 15 by xatab/How to run setup.txt"
+	],
+	"find":
+	{
+		"height": 40.0
+	},
+	"find_in_files":
+	{
+		"height": 117.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 22.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "navigation.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 188.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

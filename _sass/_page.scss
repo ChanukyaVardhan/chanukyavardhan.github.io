@@ -21,6 +21,7 @@
     @include span(10 of 12 last);
     @include prefix(0.5 of 12);
     @include suffix(2 of 12);
+    padding: 0;
   }
 
   .page__inner-wrap {
@@ -50,9 +51,18 @@
 
 .page__content {
 
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  ul {
+     list-style-position: inside;
+     padding-left: 20px;
+     margin: 0 0 $indent-var/4;
+  }
+
   h2 {
-    padding-bottom: 0.5em;
-    border-bottom: 1px solid $border-color;
   }
 
   p, li, dl {
@@ -61,7 +71,7 @@
 
   /* paragraph indents */
   p {
-    margin: 0 0 $indent-var;
+    margin: 0 0 $indent-var/4;
 
     /* sibling indentation*/
     @if $paragraph-indent == true {
