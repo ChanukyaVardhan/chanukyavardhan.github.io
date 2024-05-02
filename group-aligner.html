@@ -84,6 +84,13 @@
             margin-right: 5px;
         }
 
+        pre {
+            font-family: 'Courier New', monospace;
+            background-color: #1e1e1e;
+            border: 0.5px solid #3c3c3c;
+            overflow: auto;
+        }
+
   </style>
   <meta charset="utf-8">
   <meta name="description"
@@ -112,12 +119,33 @@
 </head>
 <body>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Find all list items in the references section
+      var references = document.querySelectorAll('#References ol li');
+      // Loop through each citation link
+      document.querySelectorAll('a.citation-link').forEach(function(link) {
+        // Get the ID from the href attribute
+        var refId = link.getAttribute('href').substring(1);
+        // Find the corresponding reference list item by ID
+        var refItem = document.getElementById(refId);
+        if (refItem) {
+          // Get the index of the reference
+          var refIndex = Array.prototype.indexOf.call(references, refItem) + 1;
+          // Set the index as the text of the superscript
+          // link.querySelector('sup').textContent = '[' + refIndex + ']';
+          link.textContent = '[' + refIndex + ']';
+        }
+      });
+    });
+  </script>
+
 <section class="hero">
   <div class="hero-body">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Group Aligner</h1>
+          <h1 class="title is-1 publication-title">Group Preference Aligner</h1>
           <div class="is-size-5 publication-authors">
             <span class="author-block">
               <a href="https://www.linkedin.com/in/chanukyavardhan/">Chanukya Vardhan Gujjula</a><sup>1</sup>,
@@ -132,17 +160,6 @@
 
           <div class="column has-text-centered">
             <div class="publication-links">
-              <!-- PDF Link. -->
-              <!-- <span class="link-block">
-                <a href="https://arxiv.org/abs/2310.11523"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span> -->
-              
               <!-- Code Link. -->
               <span class="link-block">
                 <a href="https://github.com/ChanukyaVardhan/group-aligner"
@@ -152,7 +169,7 @@
                   </span>
                   <span>Code</span>
                   </a>
-
+              </span>
             </div>
 
           </div>
@@ -168,34 +185,87 @@
     <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
+      <!-- <div class="column is-full"> -->
+      <!-- <div class="column is-three-quarters"> -->
         <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            LLMs are tricky. add anything else from LLM
-            It's better to have preference according to group (and even better individual) for various reasons.
-            Recent works like gpo tried doing this with few shot methods using LLM. This can be flimpsy, context length less, and is targeted at the use-case when there is low data per group.
-            We aim to do better group alignment, and for large data per group.
-            Recently, there has been work on aligner which aligns LLM outputs to safer and harmless reposnses. 
-            We leverage that aligner and add adapter modules for each group and get a group aligner for each group. This corrects the outputs from LLM for that group.
-            This fixes x and y. We wanted to create a model with the ability to train on large data, and be more robust.
-            Qualitatively, we saw that our responses are more robust. (TODO: train gpo also if possible on descriptive sentences and aligner with objective answers)
-            RLHF?? 
-          </p>
-        </div>
-        <hr>
-
-        <h2 class="title is-3">Background</h2>
           <div class="content has-text-justified">
             <p>
-              LLM may disproportionately over-represent some groups and under-represent others. Although guiding an LLM using prompts such as "Speak as xxx" can enhance its performance, this approach is limited and can sometimes lead to misrepresentation.
-              <figure>
-                <img src="static/gpo_background.png" alt="qualitative example for climate question" style="width:100%">
-              </figure>
-              
-              
-              While prior methods including supervised fine-tuning, prompting, and context learning have been useful in many alignment settings, these methods could perform poorly and be computationally expensive for aligning LLM outputs to group preferences, especially in low data regimes.
+              LLMs are tricky. add anything else from LLM
+              It's better to have preference according to group (and even better individual) for various reasons.
+              Recent works like gpo tried doing this with few shot methods using LLM. This can be flimpsy, context length less, and is targeted at the use-case when there is low data per group. Further, it expects the inputs as a multiple choice question with options and predicts a answer distribution on options for that group(and can be used as a reward model later to train another llm but doens't direclty output the descriptive answers)
+              We aim to do better group alignment, and for large data per group.
+              Recently, there has been work on aligner which aligns LLM outputs to safer and harmless reposnses. 
+              We leverage that aligner and add adapter modules for each group and get a group aligner for each group. This corrects the outputs from LLM for that group.
+              This fixes x and y. We wanted to create a model with the ability to train on large data, and be more robust.
+              Qualitatively, we saw that our responses are more robust. (TODO: train gpo also if possible on descriptive sentences and aligner with objective answers).
+
+              Our project aims to develop a more efficient framework for achieving group-specific alignment in
+  LLMs, focusing on reducing the number of parameters and training time required as well as make it more robust and not depend more on context. We propose a two-stage alignment process that initially addresses common preferences across groups (such as safety and completion) before fine-tuning the model to align with the nuanced preferences of
+  individual groups
+
             </p>
           </div>
+
+<hr>
+        <h2 class="title is-3">Background</h2>
+          <div class="content has-text-justified">
+              <p>Large Language Models (LLMs) frequently exhibit biased representations, disproportionately emphasizing or neglecting certain groups. Directive prompts like <i>"Speak as [specific identity or role]"</i> offer a partial solution by providing contextual cues, yet they risk misrepresentation and have inherent limitations. Historically, methods such as supervised fine-tuning, strategic prompting, and learning from contextual examples have been used to align LLM outputs with user or group preferences. These methods, however, often prove to be inefficient and ineffective.</p>
+              
+              <h3 class="title is-4">Group Preference Optimization</h3>
+                <p>The recent Group Preference Optimization (GPO)<a href="#gpo" class="citation-link"></a> approach tries to address these challenges. GPO leverages a framework that aligns LLM outputs with the preferences of various groups using a few-shot learning paradigm. This method uses an auxiliary transformer module that predicts the preferences of a group based on the outputs of a base LLM among the options provided.</p>
+                
+                <!-- More details about example inputs, outputs, training methodology, image. As shown in the figure below,  -->
+                <p>Group alignment in GPO aims to steer pretrained LLMs to preferences catering to a wide range of groups. For each group <em>g</em>, the preference dataset is represented as <em>D<sub>g</sub></em> = {(<em>x<sub>1</sub><sup>g</sup></em>, <em>y<sub>1</sub><sup>g</sup></em>), ..., (<em>x<sub>n</sub><sup>g</sup></em>, <em>y<sub>n</sub><sup>g</sup></em>)}. Here, <em>y<sub>i</sub><sup>g</sup></em> signifies the preference of group <em>g</em> for a pair of given prompt <em>q<sub>i</sub><sup>g</sup></em> and response <em>r<sub>i</sub><sup>g</sup></em>, while <em>x<sub>i</sub><sup>g</sup></em> is its LLM representation obtained with π<sub>emb</sub>(<em>q<sub>i</sub><sup>g</sup></em>, <em>r<sub>i</sub><sup>g</sup></em>), as shown in Figure <a href="#figure1">1</a>.</p>
+
+                <figure id="figure1">
+                  <img src="images/gpo_example.png" alt="gpo dataset" style="width:80%">
+                  <figcaption>Figure 1: Group Preference Datasets</figcaption>
+                </figure>
+
+                <p> GPO leverages a transformer architecture and performs few-shot supervised learning of the preference scores to align LLMs to specific group preferences. As shown in Figure <a href="#figure2">2</a> and <a href="#figure3">3</a> and , a set of few known input-output pairs from a group, (<em>x<sub>1</sub></em>, <em>y<sub>1</sub></em>), (<em>x<sub>2</sub></em>, <em>y<sub>2</sub></em>), ..., (<em>x<sub>m</sub></em>, <em>y<sub>m</sub></em>) are provided as the context points along a base prompt. These provide the model with known preferences for the given inputs. Preferences <em>y&#770;<sub>m+1</sub></em>, ..., <em>y&#770;<sub>n</sub></em> for new inputs (<em>x<sub>m+1</sub></em>, 0), ..., (<em>x<sub>n</sub></em>, 0) are predicted based on the patterns learned from the context points.</p>
+
+                <figure id="figure2">
+                  <img src="images/gpo_method.png" alt="gpo method" style="width:100%">
+                  <figcaption>Figure 2: Illustration of GPO Architecture</figcaption>
+                </figure>
+                <figure id="figure2">
+                  <img src="images/gpo_inference.png" alt="gpo inference" style="width:80%">
+                  <figcaption>Figure 3: Illustration of GPO Architecture</figcaption>
+                </figure>
+                
+                <p>Despite its advantages, GPO has limitations. GPO predicts distribution of options for a given question and not the direct answer. This makes it difficult to direclty use it as an LLM or as an extension to LLM. GPO is a few shot paradigm, dependending heavily on the context and thus can struggle with longer context lengths.</p>
+
+              <h3 class="title is-4">Aligner</h3>
+                <p>Parallel to GPO, there is another line of work: Aligner<a href="#aligner" class="citation-link"></a>. The Aligner model represents a novel approach to aligning LLMs with human opinions without the need for Reinforcement Learning from Human Feedback (RLHF) processes. It doesn't rely on reward model training and actor-critic engineering.  It operates on the principle of learning correctional differences between aligned and unaligned responses directly from the data, structured as an autoregressive sequence-to-sequence (seq2seq) model trained on query-answer-correction (Q-A-C) triples. Given a question and output of an LLM as Answer, Aligner predicts the potential correction that is more aligned to safety and harmlesness.</p>
+
+                <p>The Aligner model stacks upon an upstream LLM. This model corrects the answers of the upstream LLM's output and redistributes the initial answers, thus aligning the composed LLM responses towards the aligned distribution. Aligner takes the user’s query <em>x</em> and the initial answer <em>y<sub>o</sub></em> generated by the upstream LLM, then generates the answer <em>y<sub>c</sub></em> which is better aligned as requried. The seq2seq model is trained to redistribute the preliminary answers <em>y<sub>o</sub></em> to the aligned answer <em>y<sub>c</sub></em> as shown in Figure <a href="#figure4">4</a> and <a href="#figure5">5</a>.</p>
+                <figure id="figure4">
+                  <img src="images/aligner_method.jpg" alt="aligner method" style="width:80%">
+                  <figcaption>Figure 4: Architecture of Aligner Module</figcaption>
+                </figure>
+                <figure id="figure5">
+                  <img src="images/aligner_train.png" alt="aligner train" style="width:80%">
+                  <figcaption>Figure 5: Illustration of Aligner Architecture</figcaption>
+                </figure>
+
+                <p>Aligner can be integrated with any pre-existing LLM making it model agnostic. This Plug-and-Play capability enhances its alignment capabilities without the need for direct modifications to the underlying LLM. Aligner demonstrates significant improvements in metrics such as helpfulness and harmlessness, achieving these gains with lower computational demands compared to traditional RLHF methods.
+                <!-- Key advantages include:
+                Model Agnosticism and Plug-and-Play Capability: Aligner can be integrated with any pre-existing LLM, enhancing its alignment capabilities without the need for direct modifications to the underlying model.
+                Efficiency and Performance: The model demonstrates significant improvements in metrics such as helpfulness and harmlessness, achieving these gains with lower computational demands compared to traditional RLHF methods. -->
+                </p>
+              
+              <h3 class="title is-4">Group Preference Aligner</h3>
+                <p>Building upon the foundational work of the Aligner model, our project introduces an innovative extension that significantly enhances group-specific alignment for LLMs. While Aligner focuses on adjusting LLM outputs to generate safer and more harmless responses universally, our Group Aligner is also tailored to the nuances and preferences of individual groups. Specifically, we propose a two-stage alignment process: First stage invovles training an universal aligner as mentioned in the aligner paper to address common preferences across groups (such as safety and harmlessness) and second stage involves finetuning the model by incorporating adapter modules to align with the nuanced preferences of individual groups.</p>
+
+                Comparative Advantages of Group Preference Aligner:
+                <ul>
+                    <li><strong>Robustness and Context Length:</strong> Unlike GPO, our method supports longer context lengths and can support descriptive conversations.</li>
+                    <li><strong>Efficiency in Group-Specific Preferences:</strong> While the first stage has high parameters, our method efficiently manages individual group adaptations with significantly fewer parameters than full fine-tuning approaches, making it highly effective and scalable.</li>
+                    <li><strong>Plug-and-Play Flexibility:</strong> Retaining Aligner’s plug-and-play capability, once trained, our Group Aligner module can be seamlessly added to any LLM to refine outputs, effectively enhancing model versatility and applicability across various applications.</li>
+                </ul>
+          </div>
+
+<hr>
 
         <h2 class="title is-3" style="text-align: center;">Data</h2>
           <div class="content has-text-justified">
@@ -203,18 +273,18 @@
               <p>We evaluate our method on two datasets.</p>
               <ul>
                 <li>
-                  <strong>Survey Dataset - OpinionQA</strong>: OpinionQA<a href="#opinionqa"><sup>[1]</sup></a> is a recent survey dataset designed to facilitate research in opinion-based question answering systems. It comprises a diverse collection of survey questions sourced from real-world data, capturing a wide range of opinions across various demographics. OpinionQA spans 22 US demographic groups (e.g. income, political ideology, race, and sex) across 500 multiple-choice questions.
+                  <strong>Survey Dataset - OpinionQA</strong>: OpinionQA<a href="#opinionqa" class="citation-link"></a> is a recent survey dataset designed to facilitate research in opinion-based question answering systems. It comprises a diverse collection of survey questions sourced from real-world data, capturing a wide range of opinions across various demographics. OpinionQA spans 22 US demographic groups (e.g. income, political ideology, race, and sex) across 500 multiple-choice questions.
                 </li>
                 <li>
                   <strong>Synthetic Dataset - DescriptiveOpinionQA</strong>: Since OpinionQA is constructed based on the survey questions which have options, we looked out for aligning conversations that have better descriptive answers rather than simple options. To achieve this, we construct a synthetic dataset using GPT-3.5-Turbo to generate a descriptive version for the same questions available in the OpinionQA dataset. We use prompts similar to those used in steering the LLM in OpinionQA to generate descriptive responses as alternatives to the options provided in the survey question of OpinionQA.
                 </li>
               </ul>
 
-            <p>The datasets are processed to get to question-answer-correction (Q-A-C) format following Aligner<a href="#opinionqa"><sup>[2]</sup></a>. Q is the question that is directly picked from from OpinionQA. A is the response generated by an LLM. C is the corrected response that the Aligner is supposed to generate to align the answer of the LLM to the respective group.</p>
+            <p>The datasets are processed to get to question-answer-correction (Q-A-C) format following Aligner<a href="#aligner" class="citation-link"></a>. Q is the question that is directly picked from from OpinionQA. A is the response generated by an LLM. C is the corrected response that the Aligner is supposed to generate to align the answer of the LLM to the respective group.</p>
             <br>
 
             <h4 class="title is-5">OpinionQA</h4>
-              An example question answer distribution from the dataset is shown below. <br>
+              <p>An example question answer distribution from the dataset is shown below.</p>
               <strong>Question:</strong> How much, if at all, do you think the ease with which people can legally obtain guns contributes to gun violence in the country today?
               <ol type="A">
                 <li>A great deal</li>
@@ -283,12 +353,12 @@
 
               <p>Since the OpinionQA dataset provides distributions statistics of the options selected at group level, and the overall statistics; we select the answer with high probablity from the overall group as the answer from the LLM. The correction for each group is the option with high probability from the answer distribution for the respective question. This would let Aligner correct the responses to generate group opinions.</p>
 
-              An example question-answer-correction generated for Democrat and Republican groups is shown below.<br>
+              <p>An example question-answer-correction generated for Democrat and Republican groups is shown below.</p>
               <strong>Question:</strong> How much, if at all, do you think the ease with which people can legally obtain guns contributes to gun violence in the country today?<br>
-              <strong>Answer:</strong> A great deal<br>
-              <strong>Correction (Democrat):</strong> A great deal<br>
-              <strong>Correction (Republican):</strong> Not too much<br>
-              <strong>Correction (Independent):</strong> A fair amount<br><br>
+              <strong style="color: #ffdd59; font-weight: bold;">Answer:</strong> A great deal<br>
+              <strong style="color: #779ecb; font-weight: bold;">Correction (Democrat):</strong> A great deal<br>
+              <strong style="color: #ff6961; font-weight: bold;">Correction (Republican):</strong> Not too much<br>
+              <strong style="color: #808080; font-weight: bold;">Correction (Independent):</strong> A fair amount<br><br>
 
             <h4 class="title is-5">DescriptiveOpinionQA</h4>
               <p>To generate better descriptive responses, we leveraged GPT-3.5-Turbo and constructed synthetic answers and corrections for each group. We use the following group level prompts and get a response for each question available in the OpinionQA dataset.</p>
@@ -328,332 +398,203 @@ response = chat_completion.choices[0].message.content</pre>
 
               <p>The responses generated for the question in the <i>Overall</i> group is considered as the default response (answer) from the language model, followed by the responses for individual groups as the corrections to the overall answers.</p>
 
-              An example question-answer-correction generated for Democrat and Republican groups is shown below.<br>
+              <p>An example question-answer-correction generated for Democrat and Republican groups is shown below.</p>
               <strong>Question:</strong> How much, if at all, do you think the ease with which people can legally obtain guns contributes to gun violence in the country today?<br>
-              <strong>Answer:</strong> I believe that the ease with which people can legally obtain guns in the United States does contribute to gun violence, and I am concerned about the impact it has on the safety of our communities.<br>
-              <strong>Correction (Democrat):</strong> The ease of legally obtaining guns in the United States definitely contributes to the high rates of gun violence we see in our country today, and stricter gun control measures are necessary to address this issue.<br>
-              <strong>Correction (Republican):</strong> I believe that the ease of legally obtaining guns should be balanced with ensuring proper background checks and mental health evaluations to prevent gun violence in our country.<br>
+              <strong style="color: #ffdd59; font-weight: bold;">Answer:</strong> I believe that the ease with which people can legally obtain guns in the United States does contribute to gun violence, and I am concerned about the impact it has on the safety of our communities.<br>
+              <strong style="color: #779ecb; font-weight: bold;">Correction (Democrat):</strong> The ease of legally obtaining guns in the United States definitely contributes to the high rates of gun violence we see in our country today, and stricter gun control measures are necessary to address this issue.<br>
+              <strong style="color: #ff6961; font-weight: bold;">Correction (Republican):</strong> I believe that the ease of legally obtaining guns should be balanced with ensuring proper background checks and mental health evaluations to prevent gun violence in our country.<br>
 
               <h3 class="title is-4">Discussion on Chosen Groups</h3>
-              <p>We chose specific groups such as income and political orientation based on their disparate nature, as demonstrated in the OpinionsQA data analysis.</p>
+              <p>For our project we chose specific groups such as income (Less than $30,000, $100,000 or more) and political orientation(Democrat, Republican) based on their disparate nature, as demonstrated in the OpinionsQA data analysis.</p>
+              <!-- <p>We chose specific groups such as income and political orientation based on their disparate nature, as demonstrated in the OpinionsQA data analysis.</p> -->
 
               <h3 class="title is-4">Exploring Option Descriptions</h3>
               <p>Despite generating data using available options shown to GPT, results were unsatisfactory. We also attempted to generate answers without specific options, prompting GPT to produce answers based directly on group context or as a generic US citizen.</p>
 
               <p>[Further details and examples of generated data and comparisons between methods can be added here.]</p>
-            </div>
-
-        <h2 class="title is-3">Data_complete</h2>
-
-          We used existing datasets as well as generated our own datasets as a part of this project. 
-
-          Dataset used in GPO is OpinionsQA (Steering) and GlobalOpinionsDataset. It benchamarks group alignment on two recent survey datasets: (1) OpinionQA (Santurkar et al., 2023), which spans 22 US demographic groups (e.g. income, political ideology, race, and sex) across 500 multiple-choice questions and (2) GlobalOpinionQA (Durmus et al., 2023), which contains multiplechoice questions answered by participants from 14 countries, amounting to 2,554 questions which cover various topics including politics, media, technology, religion, race, and ethnicity.
-
-         
-          ADD PAPER LINKS. OpinionsQA is collected using these US surveys, write about this data. It has data collected for various groups, and its objective, along with its overall statistics. Write about distirbution of this bein available as well.
-          
-          To compare our method against existing GPO method, we confined to the original dataset and ran our method against this dataset.
-
-          Along with this, we wanted to explore aligning conversations that didn't have options. The above datasets only offered objective responses and thus, we created synthetic data for the same questions available.
-          We used GPT-3.5-turbo to generate this desciptive dataset using similar prompts that are used to steer the LLM in OpinionsQA which were also used in GPO.
-
-          To generate dataset to train aligner, we need it in the format of Q-A-C. Where Q is the question, A is the answer generated and C is the correction that the aligner is expected to generate. 
-          For generating correction C, we give the interpretation of the group as the context for GPT to generate the answer according to the group. For generating A, we don't give any specific group context, instead,
-          we just ask GPT to answer as United States citizen.
-          
-          group_intepretation_map = {
-            "Democrat": "Consider yourself as a United States citizen. In today's United States politics, you are Democrat.",
-            "Republican": "Consider yourself as a United States citizen. In today's United States politics, you are Republican.",
-            "$100,000 or more": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is $100,000 or more.",
-            "Less than $30,000": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is less than $30,000.",
-            "Overall": "Consider yourself as a United States citizen."
-        }        
-          system_prompt = f"""
-          {group_intepretation_map[Group]} 
-          Answer this survey question from your perspective in a brief sentence.
-          Don't start the answer with your description or group affiliation.
-          The answer should reflect your concerns and life experiences relevant to the topic."
-      """
-      user_prompt = f"Question: {Question}."
-
-      completion = client.chat.completions.create(
-          model="gpt-3.5-turbo",
-          messages=[
-              {"role": "system", "content": system_prompt},
-              {"role": "user", "content": user_prompt}
-          ],
-          temperature=0.5
-      )
-      generated_content = completion.choices[0].message.content.
-
-      Example responses:
-      1. Question:
-      2. Answer:
-      3. Republican Correction:
-      4. Democrat Correction:
-
-
-
-      
-      DATA WHY WE CHOSE THESE GROUPS. opinions qa elaborated on a few set of groups among with income group was one. We choose republic vs this given we thought they are very disparate.
-
-      ## WRITE IF NECESSARY BEFORE NO OTPION DATA OR SKIP ALTOGETHER
-      We also explored option descriptions, generated the dataset and wanted to compare GPO against aligner. BuT
-      VERBAL: GENERATED USING THE AVAILABLE OPTIONS SHOWN TO GPT TO ELABORATE IT FURTHER. BUT IT DIDN'T LOOK GOOD (WE CAN SHOW EXAMPLES IF REQUIRED).
-      NEXT WE DIDN'T GIVE ANY OPTIONS BUT JUST TOOK THE QUESTION AND ASKED IT TO GENERATE THE ANSWER DIRECTLY BASED ON THE GROUP AND AS A GENERIC US CITIZEN.
+          </div>
 
           
           
 <hr>
           <h2 class="title is-3">Method</h2>
-          <p>
+            <div class="content has-text-justified">
+              <h3 class="title is-4">Group Preference Aligner</h3>
+                <p>
+                  Our method builds on the Aligner model. It has two stages.</p>
+                <ol>
+                  <li><strong>Universal Alignment:</strong> Initially, a universal aligner model is trained to address common preferences across groups, focusing on universally applicable aspects such as safety and harmlessness. For this project, we used a pretrained <i>Aligner-7B</i> <a href="#aligner-7b" class="citation-link"></a> model. This model was pretrained on 20K aligner (Q-A-C) dataset<a href="#aligner-20k" class="citation-link"></a> that was constructed using prompted models like GPT-4, LLama2-70B-Chat and also involving human annotators ensuring the corrections align with established principles emphasizing helpfulness and harmlessness.</li>
+                  <!-- For this project, we used a pretrained Aligner model (7B parameters). This Aligner model is a result of finetuning Alpaca model on 20k training data generated by GPT-4 (Verify and add more details).  -->
+                  <li><strong>Group-Specific Fine-Tuning:</strong> The above model is fine-tuned by integrating adapter modules tailored to the specific preferences of individual groups, allowing for precise alignment with nuanced group characteristics. Here, we take the above Aligner model, add LORA adapater modules and finetune each module with each group. we use the generated DescriptiveOpinionsQA dataset for this. This dataset has (Q,A,C) data points for each group as expected by Aligner. Thus, at the end, we will have one base model and multiple adapter modules, one each for one group.</li>
+                </ol>
 
-            CODEBASEEE - deepspeed, aligner, tech stack etc.,
-            Talk a bit more about aligner. Give example. SHow the input, output, training and inference formats. Q, A and C. 
-            
-            We wanted to explore two ways of group preference alignment.
-            First is a single stage training, including all the basic safety plus the group preference data per group. Q, A, C format: (TOODO: train from scratch if possible)            
-              a) all safety + single group data
-              b) all safty + all group data with different prompts
-            Second is a two stage training, where we have all the basic safety pretrained in a aligner and we only use adapter modules per group to induct group specific preferences in that module.
-              a) single group 
-              b) all group with different prompts at a time (TODO2: different prompts, 2k data, all groups trained at once)
-            how llms confuse or have the ability to steer according to the prompt vs keeping it clean and making sure it has only one group knowledge and the trianing is also kind of indepent in a. 
-            i.e., you add more groups indepedently, second has overall less paramenter,s but need retraining wehn new group data is added.
+                Note that we train our model in two settings. First setting is where each adapter is trained for each group separately. Second setting is where one single adapter is trained for all groups.
+
+                SHOULD WE WRITE THIS?
+                We have carefully designed prompts as well so that question has enough context about the group. Inference example here?
+
+              <h3 class="title is-4">Comparison to Baselines</h3>
+                <p>We wanted to compare how it does against GPO method. However, GPO method requires a question with options and outputs a distribution on options. Also, GPO doesn't have any base model trained on safety data. To make the comparison fair, we did below:
+                  1. We retrained another version of our model with opinionsQA instead of our generated DescriptiveOpinionsQA dataset.
+                  2. We trained a safety aligned GPO model by using DPO+GPO method. 
+                </p>
+
+                Our Group Preference Aligner model - Version 2:
+                First stage: Same as Version 1
+                Second stage: The trainig setup is same as above. For the data, we use the Opinions QA dataset. The survey question is given as Q. The answer from the overall distribution as the A and the group specific answer as the correction C for finetuning group specific adapater modules in the aligner. 
+                This model will still take only the question as input and not options but the generated output will be trained to match the option answer instead of a descriptive answer.
+
+                Safety aligned GPO model:
+                Universal Alignment: We used DPO method to finetune a Alpaca model from scratch. This is the baseline that the above Aligner was compared to and we have decided to follow the same methodology and replicated the Alpaca model trained on safety dataset using DPO.
+                Group-Specific Fine-Tuning: In GPO, a transformer module is attached on the top of Alpaca and finetuned for group preferences. In our case, we replace the Alpaca module with the above DPO safety aligned alpaca. We then finetune this model using GPO as mentioned in the paper on the opinions QA datset. For the final comparison, we convert the distribution of options that's generated by the model to a single option answer by taking the option corresponding to the highest probability option.
+
+                <!-- In summary, while the original Aligner model provides a robust foundation for generating safer and more responsible outputs from LLMs, our Group Aligner innovation extends this capability to accommodate the specific needs of diverse groups, offering a more nuanced, respectful, and effective interaction model that is particularly suited to large-scale, diverse applications.             -->
+            </div>
+
+<hr>
+          <h2 class="title is-3">Results</h2>
+            <div class="content has-text-justified">
+              <h3 class="title is-4">Experimental Setup</h3>
+                <p>We use NVIDIA Quadro RTX 8000 and NVIDIA A100 GPUs available on NYU Greene HPC.</p>
+              <p>
+                Experimental Setup: CODEBASEEE - deepspeed, aligner, tech stack etc.,
+
+                Evaluation Metrics:
+                Qualitatively, we find that our group preference aligner model gives group aligned responses as expected. Here are a few examples:
+
+                Quantitative:
+                For quantitative evaluation, we selected the Rouge metric due to its relevance in assessing the quality of descriptive outputs. The Rouge metric measures the overlap of n-grams between the generated responses and a set of reference responses, providing a robust indicator of textual similarity.
+
+                Here are the wandb plots displaying Rouge scores under two scenarios:
+                1. Individual adapters trained separately for each group.
+                2. A single adapter trained collectively for all groups.
+                
+                The results indicate comparable performance between the two settings, suggesting that adding more parameters could further enhance the results.
+
+                Comparative Analysis - Group Preference Aligner v2 (GPA-V2) vs. Safety Aligned GPO Model (S-GPO):
+                Qualitatively?
+                Add examples
+
+                Quantitative: REFINE THISSS 
+                Although GPA-V2 generates options, it still produces subjective text responses that correspond to these options rather than the literal labels such as 'a', 'b', or 'c'. Therefore, we continue to use the Rouge metric for evaluation. We convert the distribution of options that's generated by S-GPO model to a single option answer by taking the option corresponding to the highest probability option. Below are the plots comparing rouge scores of GPA-V2 and S-GPO.
+
+                In the plot, we have GPA-V2 finetuned with each adapeter for each group separately, GPA-V2 finetuned with only one adapter for all groups and S-GPO trained on all groups. AS we can see, thr rouge score of our GPA-V2 is better than S-GPO.
 
 
-            Comparison:
-            To compare against GPO method, we also trained Aligner with options data that is used in GPO and 
-            Method of GPO:
-            1. generate embedding
-            2. 
+                Key Highlights:
 
-            Ablation:
-            We also wanted to explore RLHF methods and compare it against the above SFT methods and GPO.
-            DPO:
-            Write somehting about DPO. The format is different, we only give prompt here and expect it to generate a corrected output instead of feeding it to a different model for correction like in the case of Aligner
-
-            First single stage training:
-              a) 
-              b)
-            Second is a two stage training: We have pretrained a DPO from scratch using X data as per the aligner paper to have a fair comparision to the aligner pretrained model for this stage.
-              a) single group
-              b) all groups with different prompts.  -- potential disdavntage, affter training for n groups, direclty training for n+1th gorup might not reuslt sin same result as training for n+1 gorups. so,  first one might be simpler
+                1. Training and Evaluation Dynamics of GPO:
+                When training is segmented by groups (80% training, 20% testing), the alignment scores are notably high, both with 22 groups and with a subset of 4 groups. Conversely, when splitting by questions for all groups, alignment scores diminish, suggesting potential overfitting to familiar questions. Below are wandb plots showing the rouge score under different settings, clearly highlighting this.
 
 
-            observations:
-            Unlike in Aligner, DPO needs finetuning of the entire LLM. So, we tried to compare it fairly by dividing the safety dataset into 10 parts and using only that per group.
-            to compare it compute wise.
-            Also, subjective vs objective comparisons.
-          
-          </p>
+                2. Classification vs. Regression Discrepancies:
+                The evaluation may inherently favor the GPO model as it predicts a probability distribution over options rather than generating direct text. This setup tends to yield higher Rouge scores compared to the Aligner, where direct text generation introduces more variability and challenge in matching the exact content of options.
+                ADD THE BELOW EXAMPLE
+                Example:
+                Q: Women question
+                A: No difference
+                GT: No difference
+                Aligner: It's not directly a realted concern.
+                As we see from the aboe, although both models aim to convey similar concepts, GPO's setup allows it to achieve higher Rouge scores because it matches the option format directly, whereas Aligner's narrative response introduces variability.
+                3. Adaptation to New Groups: 
+                Scalability poses a challenge across various alignment models, including our own. Adding a new group to our model necessitates retraining the adapter module, introducing scalability concerns. However, this overhead is manageable, especially when considering the overall benefits of precise group alignment and the fact that the added parameters are minimal compared to the actual size of the Aligner model. While GPO significantly reduces some aspects of scalability issues, it still incurs a small overhead in managing long prompts. It requires the pre-computation of embeddings for all Q&As at the outset. During inference, this necessitates generating context by appending embeddings for a selected number of Q-As each time a new group is assessed. Despite these challenges, both models manage the added complexity with relatively low overhead, maintaining usability and effectiveness across various settings
+
+                4. Compute and Parameter Efficiency: REFINE AND ADD MORE
+                Parameter Impact: Each LoRA adapter we introduce adds a marginal percentage increase to the base model's 7 billion parameters.
+                Compute Considerations: Should we also discuss the training time and computational resources required?
+
+
+                <!-- TODO: single inference of safety+group in both aligner and gpo. -->
+
+                <!-- Metrics:
+                qualitative - show a few examples of republican etc.,
+                quantitative - rouge metric, gpt3.5-turbo as evaluator
+                1. wandb plots - rewards for dpo model, losses.
+                2. parameter wise
+                3. compute wise
+                4. stable training show plots if avaiable -->
+
+                <!-- Overall Results:
+                Aligner no options data results:
+                
+                After training the aligner for 4 different groups, here are a few examples of our results:
+
+                Example responses:
+                1. Question:
+                2. Answer:
+                3. Republican Correction:
+                4. Democrat Correction:
+                5. 
+                6.  -->
+                
+                <!-- Comparision results:
+                Aligner Answers:
+
+                GPO Answers:
+
+                Rouge Scores: -->
+              </p>
+            </div>
+
+<hr>
           <h2 class="title is-3">Challenges</h2>
-          <p>
-          Data generation:
-          1. LLM doesn't give output in common format. 
-          POSTPROCESS TO GET IN NECESSARY FORMATS FOR TRAINING. LLM OUTPUTS REQUIRE A LOT OF CLEANING TO GET INTO DESIRED FORMAT - LEARNING.
-          2. Need to tune the temperature accordingly.
-          3. Had to experiemnt with prompt a lot to ensure it doesn't give generic repsonses for all groups and
-           it doesn't give garbase or too obvious answers like, "Given I am a democrat, according to my view, ..." etc.,
-           It was really tricky to get the correct prompt to generate the data
-          4. Low training data per group, thus, can't train models liek Aligner from scratch and have to stick to finetuning.
-          5. Incomplete sentences: {
-            "key": "LEGALIMG_W41",
-            "question": "In order to maintain the strength of the U.S. economy over the next 30 years, do you think that legal immigration will need to be",
-            "answer": "Maintained at current levels",
-            "correction": "Maintained at current levels"
-        },{
-          "key": "LOCALELECT_W29",
-          "question": "The next question is about local elections, such as for mayor or a school board. Do you",
-          "answer": "Always vote in local elections",
-          "correction": "Never vote in local elections"
-      }
+            <div class="content has-text-justified">
+              <h3 class="title is-4">Data Generation Challenges</h3>
+                <p><strong>Inconsistent Output Formats:</strong> The outputs from LLMs did not adhere to a common format, necessitating extensive post-processing to shape the data into a usable form for training. This involved significant cleaning and manipulation to meet the desired data format. </p>
+                <p><strong>Temperature Tuning:</strong> Adjusting the generation temperature of the LLM was crucial to balance creativity and relevance in the responses, ensuring that the data generated met our expectations.</p>
+                <p><strong>Prompt Engineering:</strong> Crafting the right prompts was a big challenge. We needed to avoid generic responses that could apply uniformly across all groups as well as overly scripted or obvious answers, such as "Given I am a democrat, according to my view, ...". Finding the precise phrasing to elicit useful and varied responses required extensive experimentation.</p>
+                <p><strong>Sparse Data for Each Group:</strong> The limited amount of training data available for each group made it impractical to train models like Aligner from scratch. Thus, we were focused primarily on fine-tuning existing models.</p>
 
-          Huge models. For available gpu.
-          1. memory isn't enough to load such large models
-          2. deepspped zero stages exploring for tradeoffs between time and memory
-          3. max_length generation is going out of memory, had to fix that well
-          4. load in low bit resolution (peft) and train in 32 bit
-          5. lora was necessary
-          6. Multiple codebases, training details for dpo not completely there in aligner etc.,
+                <p><strong>Still Left out Data Challenges:</strong></p>
 
+                <p><strong>Handling Incomplete Sentences:</strong> We encountered data examples with incomplete sentences. These cause trouble in training aligner given it doesn't know the full question to answer as expected by the ground truth. 
+                Examples include:
+                <pre>Incomplete sentences: {
+  "key": "LEGALIMG_W41",
+  "question": "In order to maintain the strength of the U.S. economy over the next 30 years, do you think that legal immigration will need to be",
+  "answer": "Maintained at current levels",
+  "correction": "Maintained at current levels"
+},
+{
+  "key": "LOCALELECT_W29",
+  "question": "The next question is about local elections, such as for mayor or a school board. Do you",
+  "answer": "Always vote in local elections",
+  "correction": "Never vote in local elections"
+}</pre></p>
+                <p><strong>REFINE THIS PONT</strong>: Maybe generating data for all groups and testing out explicitly?</p>
 
-          </p>
-
-          <h2 class="title is-3">Results</h2>
-          <p>
-
-            TODO: single inference of safety+group in both aligner and gpo.
-
-            Metrics:
-            qualitative - show a few examples of republican etc.,
-            quantitative - rouge metric, gpt3.5-turbo as evaluator
-            1. wandb plots - rewards for dpo model, losses.
-            2. parameter wise
-            3. compute wise
-            4. stable training
-
-            Overall Results:
-            Aligner no options data results:
-            
-            After training the aligner for 4 different groups, here are a few examples of our results:
-
-            Example responses:
-            1. Question:
-            2. Answer:
-            3. Republican Correction:
-            4. Democrat Correction:
-            5. 
-            6. 
-            
-            
-          Comparision results:
-          Aligner Answers:
-
-          GPO Answers:
-
-          Rouge Scores:
-
-
-            Highlight 1:
-            Plots. 
-            When we train with splits across groups, i.e., 80% of groups with all questions are trained and 20% of groups are evaluated, the alignment score is high both with 22 groups and with a subset of 4 groups. When 
-            but when we train with split across questions and we train for all groups i.e., 80% of all questions for all groups are trained and 20% are evaluated, the alignment score is low.
-
-            We conjecture that this is due to bias towards questions that have already been seen.
-
-            Insert a nice image with rectangels drawn across the excel sheet to show the split and maybe even numbers aaccordingly.
-
-
-
-            Highlight 2: classification vs regression
-            We have to highlight that the results are biased towards GPO. This is because, GPO predicts the probability distribution of the options and not the direct text. We evaluate the rouge score between the highest probable option and the ground truth option. Here, the generations are fixed. Thus, the model is not burdened with generating the exact option content like in the case of aligner. 
-            Example:
-            Q: Women question
-            A: No difference
-            GT: No difference
-            Aligner: It's not directly a realted concern.
-
-            so, as we can see, although both the models are intending the same thing, the score for GPO inherently is setup to give higher score over Aligner model.
-
-
-            Highlight 3:
-            Compared to GPO, in our model, every time a new group is added, we need to train our adapter module. However, The solution mentioned in GPO for long prompts requires running embeddings for all Q and A in the beginning. During the inference time, the context is generated by appending all the embeddings for selected number of Q-As of that group. This will add overhead every time a new group is tested.
- 
-
-
-          </p>
-           <figure>
-            <img src="static/gpo_transformer.png" alt="qualitative example for climate question" style="width:100%">
-          </figure>
-
-          <p>
-            GPO parameterizes a novel transformer module which in-context learns to predict group preference scores for new LLM outputs given a few examples of LLM outputs and ground-truth preference scores from that group.
-          </p>
-
-         
-           <figure>
-            <img src="static/algo.png" alt="qualitative example for climate question" style="width:70%">
-          </figure>
-
-<hr>
-          <h2 class="title is-3">Results</h2>
- <h2 class="title is-4">Adapt to Group Preferences</h2>
-          <p>
-            GPO-aligned LLM outputs exhibit higher alignment scores compared with common baseline methods for multiple popular open-source models across varying parameter and pretraining dataset size scales, and opinion datasets.
-
-          </p>
-
-          <figure>
-            <img src="static/alignment_results.png" alt="qualitative example for climate question" style="width:100%">
-          </figure>
-<hr>
-          <p>
-<p>
-    Qualitatively, we find that GPO-aligned LLM output distributions are significantly more similar to group ground truth distributions than baseline methods.
-</p>
-<p>
-    In the qualitative example below, the first row depicts the ground truth group opinion distribution. With limited context samples, GPO successfully adapts to match the opinion distributions of different groups. 
-    For instance, it increases preference for option A when adapted to the group <em>Hindus</em>, whereas other steered LMs do not exhibit correct distribution changes. In particular, 
-    <em>Llama2-13b-steered</em> seems biased towards a specific option, overemphasizing it instead of providing an accurate reflection of the targeted group's distribution.
-</p>
-<p>
-    In contrast, for demographics like <em>College graduate/some postgrad</em> that have a balanced opinion distribution, GPO preserves this balance effectively. This underlines 
-    GPO's ability not just to align with broad dataset group preferences, but also to fine-tune its alignment to specific groups with limited context.
-</p>
-
-          </p>
-
-          <figure>
-            <img src="static/climate.png" alt="qualitative example for climate question" style="width:120%">
-          </figure>
-
-         
-<hr>
-
-          <p>
-            <b>Scalability with Increasing Context Samples.</b>
-            GPO is also significantly more <b>sample efficient</b> than baseline methods, achieving higher alignment scores while using fewer examples.
-          </p>
-
-
-          <figure>
-            <img src="static/efficiency.png" alt="qualitative example for climate question" style="width:70%">
-          </figure>
-          <hr>
- <h2 class="title is-4">Adapt to Individual Preferences</h2>
-          <p>
-            We also show that GPO is also able to adapt to a single individual’s preferences, a setting where there is often much higher variance between preference datasets than the group preference alignment setting.
-          </p>
-
-          <figure>
-            <img src="static/individual.png" alt="qualitative example for climate question" style="width:100%">
-          </figure>
+              <h3 class="title is-4"> Hardware and Computational Challenges</h3>
+                <p><strong>Memory Limitations:</strong> The size of the models often exceeded the available GPU memory, posing significant challenges in managing model loads and operations.</p>
+                <p><strong>Exploring DeepSpeed Zero Stages:</strong> We had to experiment with different DeepSpeed Zero optimization stages to find the right balance between memory usage and computational time.</p>
+                <p><strong>Out-of-Memory Issues:</strong> Managing the maximum generation length without exceeding memory capacities required experimentation too.</p>
+                <p><strong>Precision and Efficiency:</strong> To manage these large models effectively, we loaded them in lower bit resolutions (e.g., using 16-bit precision) for more memory-efficient training, while maintaining calculations in 32-bit to preserve accuracy.</p>
+                <p><strong>Necessity of LoRA:</strong> Implementing Low-Rank Adaptations (LoRA) was essential to modify large models without extensively retraining them, thus saving on computational resources.</p>
+                <!-- IS BELOW NECESSARY??
+                Multiple Codebases and Documentation Gaps: Integrating multiple codebases and navigating incomplete documentation, especially for specific training details in models like Aligner and DeepSpeed's configurations, added complexity to our development process. -->
+            </div>
+          
 <hr>
           <h2 class="title is-3">Discussion and Future Work</h2>
+            <div class="content has-text-justified">
+              <p>GPO provides a framework for few-shot alligning LLMs to group preferences. GPO significantly outperforms prior methods as measured by alignment score for group preference alignment while requiring no gradient updates to the base LLM. We find that GPO is also more sample efficient, improving alignment score significantly more than baseline methods while using fewer samples, and is effective across multiple popular open-source LLMs of various parameter and pre-training dataset scales. Future work should explore adapting GPO with other datasets (especially non-mulitiple choice format), the impact of aligning to group preferences on alignment for other values including harmlessness or helpfulness, and using pre-training model initializations for the GPO module
+              </p>
+            </div>
 
-          <p>
-            GPO provides a framework for few-shot alligning LLMs to group preferences. GPO significantly outperforms prior
-            methods as measured by alignment score for group preference alignment while requiring no gradient
-            updates to the base LLM. We find that GPO is also more sample efficient, improving alignment score
-            significantly more than baseline methods while using fewer samples, and is effective across multiple
-            popular open-source LLMs of various parameter and pre-training dataset scales. Future work should explore adapting GPO 
-            with other datasets (especially non-mulitiple choice format), the impact of aligning to group preferences on 
-            alignment for other values including harmlessness or helpfulness, and using pre-training model initializations for 
-            the GPO module
-          </p>
-        </div>
-
-        
+<hr>
+<!--           <h2 class="title is-3">References</h2>
+            <div class="content has-text-justified">
+              <ol>
+                <li id="gpo">Zhao, Siyan, John Dang, and Aditya Grover. "Group preference optimization: Few-shot alignment of large language models." arXiv preprint arXiv:2310.11523 (2023).</li>
+                <li id="aligner">Ji, Jiaming, Boyuan Chen, Hantao Lou, Donghai Hong, Borong Zhang, Xuehai Pan, Juntao Dai, and Yaodong Yang. "Aligner: Achieving efficient alignment through weak-to-strong correction." arXiv preprint arXiv:2402.02416 (2024).</li>
+                <li id="opinionqa">Shibani Santurkar, Esin Durmus, Faisal Ladhak, Cinoo Lee, Percy Liang, and Tatsunori Hashimoto. "Whose opinions do language models reflect?" arXiv preprint arXiv:2303.17548 (2023).</li>
+                <li id="aligner-7b"><a href="https://huggingface.co/aligner/aligner-7b-v1.0">aligner-7b-v1.0</a></li>
+                <li id="aligner-20k"><a href="https://huggingface.co/datasets/aligner/aligner-20K">aligner-20K</a></li>
+              </ol>
+            </div> -->
       </div>
     </div>
-    <!--/ Abstract. -->
-
-    <!-- <div class="is-centered">
-      
-    </div> -->
-    <!-- <div class=".iframe-container">
-      
-    
-
-    </div> -->
-
   </div>
 </section>
-
-
-<!-- <section class="section" id="BibTeX">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@article{zhao2023group,
-  title={Group preference optimization: Few-shot alignment of large language models},
-  author={Zhao, Siyan and Dang, John and Grover, Aditya},
-  journal={arXiv preprint arXiv:2310.11523},
-  year={2023}
-}</code></pre>
-  </div>
-</section>
- -->
 
 <section class="section" id="References">
   <div class="container is-max-desktop content">
@@ -661,15 +602,15 @@ response = chat_completion.choices[0].message.content</pre>
       <div class="column is-four-fifths">
       <h2 class="title">References</h2>
       <ol>
-        <li id="opinionqa">Shibani Santurkar, Esin Durmus, Faisal Ladhak, Cinoo Lee, Percy Liang, and Tatsunori Hashimoto. "Whose opinions do language models reflect?" arXiv preprint arXiv:2303.17548 (2023).</li>
+        <li id="gpo">Zhao, Siyan, John Dang, and Aditya Grover. "Group preference optimization: Few-shot alignment of large language models." arXiv preprint arXiv:2310.11523 (2023).</li>
         <li id="aligner">Ji, Jiaming, Boyuan Chen, Hantao Lou, Donghai Hong, Borong Zhang, Xuehai Pan, Juntao Dai, and Yaodong Yang. "Aligner: Achieving efficient alignment through weak-to-strong correction." arXiv preprint arXiv:2402.02416 (2024).</li>
+        <li id="opinionqa">Shibani Santurkar, Esin Durmus, Faisal Ladhak, Cinoo Lee, Percy Liang, and Tatsunori Hashimoto. "Whose opinions do language models reflect?" arXiv preprint arXiv:2303.17548 (2023).</li>
+        <li id="aligner-7b"><a href="https://huggingface.co/aligner/aligner-7b-v1.0">aligner-7b-v1.0</a></li>
+        <li id="aligner-20k"><a href="https://huggingface.co/datasets/aligner/aligner-20K">aligner-20K</a></li>
       </ol>
     </div>
   </div>
 </section>
-
-
-
 
 
 
