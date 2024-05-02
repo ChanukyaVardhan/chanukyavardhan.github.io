@@ -91,6 +91,56 @@
             overflow: auto;
         }
 
+        .side-by-side-container {
+            display: flex;
+/*            justify-content: space-around;*/
+/*            align-items: stretch; /* Ensures that all figures align vertically */*/
+        }
+        .side-by-side-container figure {
+            width: 33%; /* Adjust the width as necessary */
+            margin: 0px;
+            display: flex;
+            flex-direction: column;
+/*            justify-content: space-between;*/
+        }
+        .side-by-side-container img {
+            width: 100%;
+/*            height: auto;*/
+        }
+        .side-by-side-container figcaption {
+            text-align: center;
+        }
+
+        table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .democrat {
+            color: #779ecb;
+        }
+        .republican {
+            color: #ff6961;
+        }
+        .overall {
+            color: #ffdd59;
+        }
+
   </style>
   <meta charset="utf-8">
   <meta name="description"
@@ -257,7 +307,7 @@
               <h3 class="title is-4">Group Preference Aligner</h3>
                 <p>Building upon the foundational work of the Aligner model, our project introduces an innovative extension that significantly enhances group-specific alignment for LLMs. While Aligner focuses on adjusting LLM outputs to generate safer and more harmless responses universally, our Group Aligner is also tailored to the nuances and preferences of individual groups. Specifically, we propose a two-stage alignment process: First stage invovles training an universal aligner as mentioned in the aligner paper to address common preferences across groups (such as safety and harmlessness) and second stage involves finetuning the model by incorporating adapter modules to align with the nuanced preferences of individual groups.</p>
 
-                Comparative Advantages of Group Preference Aligner:
+                Comparative Advantages of Group Preference Aligner (GPA):
                 <ul>
                     <li><strong>Robustness and Context Length:</strong> Unlike GPO, our method supports longer context lengths and can support descriptive conversations.</li>
                     <li><strong>Efficiency in Group-Specific Preferences:</strong> While the first stage has high parameters, our method efficiently manages individual group adaptations with significantly fewer parameters than full fine-tuning approaches, making it highly effective and scalable.</li>
@@ -355,7 +405,7 @@
 
               <p>An example question-answer-correction generated for Democrat and Republican groups is shown below.</p>
               <strong>Question:</strong> How much, if at all, do you think the ease with which people can legally obtain guns contributes to gun violence in the country today?<br>
-              <strong style="color: #ffdd59; font-weight: bold;">Answer:</strong> A great deal<br>
+              <strong style="color: #ffdd59; font-weight: bold;">Overall Answer:</strong> A great deal<br>
               <strong style="color: #779ecb; font-weight: bold;">Correction (Democrat):</strong> A great deal<br>
               <strong style="color: #ff6961; font-weight: bold;">Correction (Republican):</strong> Not too much<br>
               <strong style="color: #808080; font-weight: bold;">Correction (Independent):</strong> A fair amount<br><br>
@@ -400,21 +450,19 @@ response = chat_completion.choices[0].message.content</pre>
 
               <p>An example question-answer-correction generated for Democrat and Republican groups is shown below.</p>
               <strong>Question:</strong> How much, if at all, do you think the ease with which people can legally obtain guns contributes to gun violence in the country today?<br>
-              <strong style="color: #ffdd59; font-weight: bold;">Answer:</strong> I believe that the ease with which people can legally obtain guns in the United States does contribute to gun violence, and I am concerned about the impact it has on the safety of our communities.<br>
+              <strong style="color: #ffdd59; font-weight: bold;">Overall Answer:</strong> I believe that the ease with which people can legally obtain guns in the United States does contribute to gun violence, and I am concerned about the impact it has on the safety of our communities.<br>
               <strong style="color: #779ecb; font-weight: bold;">Correction (Democrat):</strong> The ease of legally obtaining guns in the United States definitely contributes to the high rates of gun violence we see in our country today, and stricter gun control measures are necessary to address this issue.<br>
               <strong style="color: #ff6961; font-weight: bold;">Correction (Republican):</strong> I believe that the ease of legally obtaining guns should be balanced with ensuring proper background checks and mental health evaluations to prevent gun violence in our country.<br>
 
               <h3 class="title is-4">Discussion on Chosen Groups</h3>
-              <p>For our project we chose specific groups such as income (Less than $30,000, $100,000 or more) and political orientation(Democrat, Republican) based on their disparate nature, as demonstrated in the OpinionsQA data analysis.</p>
-              <!-- <p>We chose specific groups such as income and political orientation based on their disparate nature, as demonstrated in the OpinionsQA data analysis.</p> -->
+              <p>For our project we chose specific groups such as income (Less than $30,000, $100,000 or more) and political orientation(Democrat, Republican) based on their disparate nature, as demonstrated in the OpinionQA data analysis.</p>
+              <!-- <p>We chose specific groups such as income and political orientation based on their disparate nature, as demonstrated in the OpinionQA data analysis.</p> -->
 
               <h3 class="title is-4">Exploring Option Descriptions</h3>
               <p>Despite generating data using available options shown to GPT, results were unsatisfactory. We also attempted to generate answers without specific options, prompting GPT to produce answers based directly on group context or as a generic US citizen.</p>
 
               <p>[Further details and examples of generated data and comparisons between methods can be added here.]</p>
           </div>
-
-          
           
 <hr>
           <h2 class="title is-3">Method</h2>
@@ -425,51 +473,108 @@ response = chat_completion.choices[0].message.content</pre>
                 <ol>
                   <li><strong>Universal Alignment:</strong> Initially, a universal aligner model is trained to address common preferences across groups, focusing on universally applicable aspects such as safety and harmlessness. For this project, we used a pretrained <i>Aligner-7B</i> <a href="#aligner-7b" class="citation-link"></a> model. This model was pretrained on 20K aligner (Q-A-C) dataset<a href="#aligner-20k" class="citation-link"></a> that was constructed using prompted models like GPT-4, LLama2-70B-Chat and also involving human annotators ensuring the corrections align with established principles emphasizing helpfulness and harmlessness.</li>
                   <!-- For this project, we used a pretrained Aligner model (7B parameters). This Aligner model is a result of finetuning Alpaca model on 20k training data generated by GPT-4 (Verify and add more details).  -->
-                  <li><strong>Group-Specific Fine-Tuning:</strong> The above model is fine-tuned by integrating adapter modules tailored to the specific preferences of individual groups, allowing for precise alignment with nuanced group characteristics. Here, we take the above Aligner model, add LORA adapater modules and finetune each module with each group. we use the generated DescriptiveOpinionsQA dataset for this. This dataset has (Q,A,C) data points for each group as expected by Aligner. Thus, at the end, we will have one base model and multiple adapter modules, one each for one group.</li>
+                  <li><strong>Group-Specific Fine-Tuning:</strong> The above model is fine-tuned by integrating adapter modules tailored to the specific preferences of individual groups, allowing for precise alignment with nuanced group characteristics. We work with two different settings.
+                    <ul>
+                      <li>In the first case, we take the Aligner model with a single LoRA adapter module and finetune it with data from all the groups.</li>
+                      <li>In the second case, we finetune separate LoRA adapter modules for each group.</li>
+                    </ul>
+                  We train the adapters on the generated DescriptiveOpinionQA dataset, which has (Q, A, C) datapoitns for each group as expected by Aligner. We update the default helpful and harmless correction prompt used in Aliger to the group specific prompt by instructing the model to generate responses from the viewpoint of an individual from the group. This is changing the correction prompt from <i>"Edit the following Question-Answer pair to make it more helpful and harmless:"</i> to <i>"Edit the following Question-Answer pair to make it more aligned to a Democrat's view:"</i> for Democrat group.
+                </ol>
+                At the end, we will have one base model and a single adapter module or one base model and multiple adapter modules for each group.
+
+              <h3 class="title is-4">Comparison to GPO</h3>
+                Since GPO is trained by providing the question and with the options and predicts the distribution among the options, this is not directly comparable to our GPA methodology. Along with this, GPO doesn't have any base model that is trained on safety data. For a better and fair comparison of GPO with our method, we adopted the following training strategies for GPA and GPO.
+                <ol>
+                  <li><strong>GPA-Objective:</strong> We use the same training stategy for GPA as mentioned earlier, but now train it to predict the options available in OpinionQA instead of generating completely descriptive responses. This means we train another GPA model directly on the OpinionQA dataset instead of our generated DescriptiveOpinionQA dataset. For the (Q, A, C) training pairs, the survery question is given as the Q, the answer from the overall distribution with maximum distribution is the A, and the group specific answer with maximum probability as the correction C. This model would still take only the question as input and not all the options, unlike GPO, but the generated output will be trained to match the option answer instead of a descriptive answer.</li>
+                  <li><strong>S-GPO (GPO trained with DPO trained LLM as base):</strong> Our GPA has an universal alignment stage first that aligns the LLM model towards safety and harmlessness. Following the same methodology, choosing the base LLM that is trained on safety and harmlessness as the first stage before GPO would make the comparison even. The Aligner model<a href="#aligner" class="citation-link"></a> was compared to a finetuned alpaca model following the DPO and PPO methodologies trained on the same Aligner dataset. So, we use this DPO finetuned alpaca model as the universal alignment satge before GPO. However, the checkpoints for these are not made available. We replicated the same by finetuning alpaca-7b model on aligner-20K dataset using DPO. For the second stage, we now train GPO on this DPO finetuned alpaca model using OpinionQA dataset following the same training strategy used in GPO<a href="#gpo" class="citation-link"></a>. For final comparison to GPA-Objective, we convert the distribution of options that's generated by the S-GPO model to a single answer by taking the option that has the highest probability.</li>
                 </ol>
 
-                Note that we train our model in two settings. First setting is where each adapter is trained for each group separately. Second setting is where one single adapter is trained for all groups.
+                By following the above changes to training strategies to start from a similar first stage base, the second stage training should give good idea about the differences among the GPA and GPO approaches.
 
-                SHOULD WE WRITE THIS?
-                We have carefully designed prompts as well so that question has enough context about the group. Inference example here?
-
-              <h3 class="title is-4">Comparison to Baselines</h3>
-                <p>We wanted to compare how it does against GPO method. However, GPO method requires a question with options and outputs a distribution on options. Also, GPO doesn't have any base model trained on safety data. To make the comparison fair, we did below:
-                  1. We retrained another version of our model with opinionsQA instead of our generated DescriptiveOpinionsQA dataset.
-                  2. We trained a safety aligned GPO model by using DPO+GPO method. 
-                </p>
-
-                Our Group Preference Aligner model - Version 2:
-                First stage: Same as Version 1
-                Second stage: The trainig setup is same as above. For the data, we use the Opinions QA dataset. The survey question is given as Q. The answer from the overall distribution as the A and the group specific answer as the correction C for finetuning group specific adapater modules in the aligner. 
-                This model will still take only the question as input and not options but the generated output will be trained to match the option answer instead of a descriptive answer.
-
-                Safety aligned GPO model:
-                Universal Alignment: We used DPO method to finetune a Alpaca model from scratch. This is the baseline that the above Aligner was compared to and we have decided to follow the same methodology and replicated the Alpaca model trained on safety dataset using DPO.
-                Group-Specific Fine-Tuning: In GPO, a transformer module is attached on the top of Alpaca and finetuned for group preferences. In our case, we replace the Alpaca module with the above DPO safety aligned alpaca. We then finetune this model using GPO as mentioned in the paper on the opinions QA datset. For the final comparison, we convert the distribution of options that's generated by the model to a single option answer by taking the option corresponding to the highest probability option.
-
-                <!-- In summary, while the original Aligner model provides a robust foundation for generating safer and more responsible outputs from LLMs, our Group Aligner innovation extends this capability to accommodate the specific needs of diverse groups, offering a more nuanced, respectful, and effective interaction model that is particularly suited to large-scale, diverse applications.             -->
+                <!-- In summary, while the original Aligner model provides a robust foundation for generating safer and more responsible outputs from LLMs, our Group Aligner innovation extends this capability to accommodate the specific needs of diverse groups, offering a more nuanced, respectful, and effective interaction model that is particularly suited to large-scale, diverse applications.-->
             </div>
 
 <hr>
           <h2 class="title is-3">Results</h2>
             <div class="content has-text-justified">
               <h3 class="title is-4">Experimental Setup</h3>
-                <p>We use NVIDIA Quadro RTX 8000 and NVIDIA A100 GPUs available on NYU Greene HPC.</p>
+                <p>We use NVIDIA Quadro RTX 8000 and NVIDIA A100 GPUs available on NYU Greene HPC. To finetune Aligner models on OpinionQA and DescriptiveOpinionQA we use the aligner codebase<a href="#aligner-code" class="citation-link"></a>. We use the same codebase to finetune alpaca-7b on the aligner-20K dataset using DPO. To train GPO we follow the code provided at <a href="#gpo-code" class="citation-link"></a>.</p>
+                Specifically,
+                <ul>
+                  <li>Aligner Codebase is used to finetune the adapter modules on both OpinionQA (GPA-Objective) and DescriptiveOpinionQA (GPA-Descriptive) datasets. This is also used to finetune alpaca-7b using DPO on the aligner-20K dataset that serves as the base for traing GPO in S-GPO.</li>
+                  <li>GPO Codebase is used to train GPO model on the DPO trained alpaca-7b model (S-GPO).</li>
+                </ul>
+
+              <h3 class="title is-4">Evaluation Metrics</h3>
+                <p>We evaluate the performance of all the trained models through qualitative and quantative estimates. For qualitative evaluation, we manually evalaute generated responses on the evaluation set and compare its alignment with the correction comparted to the answer. For quantitative evaluation we chose the Rouge metric dueo to its relevant in assessing teh quality of descriptive outputs. The Rouge metric measures the overlap of n-grams between the generated responses and a set of reference responses, providing a robust inidicator of textual similarity. NOTE THAT ROUGE SCORE IS NOT THE OPTIMAL METRIC FOR EVALUATION, ESPECIALLY FOR THIS DESCRIPTIVE ANSWERS. PROBABLY FOR SIMPLE OPTIONS THAT CAN BE BETTER AS MINIMAL WORDS.</p>
+
+              <h3 class="title is-4">GPA-Descriptive</h3>
+                <p>Following are some qualitative examples from the individual adapters:</p>
+                <strong>Question:</strong> Thinking about long-range foreign policy goals, how much priority, if any, do you think reducing legal immigrations into the US should be given?
+                <table border="2">
+                    <tr>
+                        <th style="text-align: center;"></th>
+                        <th style="text-align: center; color: #779ecb;">Democrat</th>
+                        <th style="text-align: center; color: #ff6961;">Republican</th>
+                        <th style="text-align: center; color: #ffdd59;">Overall Answer</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center; font-weight: bold;">Groundtruth Correction</td>
+                        <td>Reducing legal immigration should not be a top priority in long-range foreign policy goals; instead, the focus should be on comprehensive immigration reform that promotes fairness, security, and economic growth.</td>
+                        <td>Reducing legal immigration should be a significant priority in our long-range foreign policy goals to ensure the protection of American jobs and national security.</td>
+                        <td>Reducing legal immigration should not be a top priority in long-range foreign policy goals. It is important to balance national security concerns with the contributions and diversity that immigrants bring to the United States.</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center; font-weight: bold;">Generated Correction</td>
+                        <td>Reducing legal immigration should not be a top priority in long-range foreign policy goals; instead, I believe in inclusive and fair immigration policies that benefit the United States and all its citizens.</td>
+                        <td>Reducing legal immigration should be a top priority in order to protect American jobs and culture.</td>
+                        <td></td>
+                    </tr>
+                </table>
+
+                <strong>Question:</strong> How much, if at all, do you think the following proposals would do to reduce economic inequality in the U.S.? Expanding government benefits for the poor.
+                <table border="2">
+                    <tr>
+                        <th style="text-align: center;"></th>
+                        <th style="text-align: center; color: #779ecb;">Less than $30,000</th>
+                        <th style="text-align: center; color: #ff6961;">$100,000 or more</th>
+                        <th style="text-align: center; color: #ffdd59;">Overall Answer</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center; font-weight: bold;">Groundtruth Correction</td>
+                        <td>Expanding government benefits for the poor would greatly help reduce economic inequality in the U.S. as it would provide much-needed support for low-income families like mine to meet basic needs and have a better chance at financial stability.</td>
+                        <td>Expanding government benefits for the poor could help reduce economic inequality by providing necessary support for those in need, but it is important to ensure that these programs are efficient and effective in targeting those who truly need assistance.</td>
+                        <td>Expanding government benefits for the poor would help reduce economic inequality by providing necessary support for those in need and helping to level the playing field for all citizens.</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center; font-weight: bold;">Generated Correction</td>
+                        <td>Expanding government benefits for the poor would greatly help reduce economic inequality by providing much-needed support to families like mine who are struggling to make ends meet due to limited income.</td>
+                        <td>Expanding government benefits for the poor would definitely help reduce economic inequality by providing much-needed support and opportunities for upward mobility for those struggling to make ends meet.</td>
+                        <td></td>
+                    </tr>
+                </table>
+
+                <p>From the above examples we can see that the generated corrections for each of the groups follow the expected tone as in their groundtruth response.</p>
+
+                <p>Rouge scores for GPA trained on DescriptiveOpinionQA dataset for individual adapters trained separately for each group and a common adapter trained collectively for all groups can be see in figure below. We follow a train-test split of 90%-10%.</p>
+                <figure id="gpa_descriptive_rouge1">
+                    <img src="images/gpa_descriptive_rouge1.png" alt="GPA Descriptive Rouge 1" style="width:60%">
+                    <figcaption>GPA-Descriptive: Rouge 1</figcaption>
+                </figure>
+                <figure id="gpa_descriptive_rouge1">
+                    <img src="images/gpa_descriptive_rouge2.png" alt="GPA Descriptive Rouge 2" style="width:60%">
+                    <figcaption>GPA-Descriptive: Rouge 2</figcaption>
+                </figure>
+                <figure id="gpa_descriptive_rouge1">
+                    <img src="images/gpa_descriptive_rougel.png" alt="GPA Descriptive Rouge l" style="width:60%">
+                    <figcaption>GPA-Descriptive: Rouge l</figcaption>
+                </figure>
+                <p>The results indicate comparable performance between the single adapter setting and individual adapters, suggesting that adding more parameters could further enhance the results.</p>
+
+              
+
               <p>
-                Experimental Setup: CODEBASEEE - deepspeed, aligner, tech stack etc.,
 
-                Evaluation Metrics:
-                Qualitatively, we find that our group preference aligner model gives group aligned responses as expected. Here are a few examples:
-
-                Quantitative:
-                For quantitative evaluation, we selected the Rouge metric due to its relevance in assessing the quality of descriptive outputs. The Rouge metric measures the overlap of n-grams between the generated responses and a set of reference responses, providing a robust indicator of textual similarity.
-
-                Here are the wandb plots displaying Rouge scores under two scenarios:
-                1. Individual adapters trained separately for each group.
-                2. A single adapter trained collectively for all groups.
-                
-                The results indicate comparable performance between the two settings, suggesting that adding more parameters could further enhance the results.
 
                 Comparative Analysis - Group Preference Aligner v2 (GPA-V2) vs. Safety Aligned GPO Model (S-GPO):
                 Qualitatively?
@@ -495,7 +600,7 @@ response = chat_completion.choices[0].message.content</pre>
                 A: No difference
                 GT: No difference
                 Aligner: It's not directly a realted concern.
-                As we see from the aboe, although both models aim to convey similar concepts, GPO's setup allows it to achieve higher Rouge scores because it matches the option format directly, whereas Aligner's narrative response introduces variability.
+                As we see from the above, although both models aim to convey similar concepts, GPO's setup allows it to achieve higher Rouge scores because it matches the option format directly, whereas Aligner's narrative response introduces variability.
                 3. Adaptation to New Groups: 
                 Scalability poses a challenge across various alignment models, including our own. Adding a new group to our model necessitates retraining the adapter module, introducing scalability concerns. However, this overhead is manageable, especially when considering the overall benefits of precise group alignment and the fact that the added parameters are minimal compared to the actual size of the Aligner model. While GPO significantly reduces some aspects of scalability issues, it still incurs a small overhead in managing long prompts. It requires the pre-computation of embeddings for all Q&As at the outset. During inference, this necessitates generating context by appending embeddings for a selected number of Q-As each time a new group is assessed. Despite these challenges, both models manage the added complexity with relatively low overhead, maintaining usability and effectiveness across various settings
 
@@ -576,7 +681,7 @@ response = chat_completion.choices[0].message.content</pre>
 <hr>
           <h2 class="title is-3">Discussion and Future Work</h2>
             <div class="content has-text-justified">
-              <p>GPO provides a framework for few-shot alligning LLMs to group preferences. GPO significantly outperforms prior methods as measured by alignment score for group preference alignment while requiring no gradient updates to the base LLM. We find that GPO is also more sample efficient, improving alignment score significantly more than baseline methods while using fewer samples, and is effective across multiple popular open-source LLMs of various parameter and pre-training dataset scales. Future work should explore adapting GPO with other datasets (especially non-mulitiple choice format), the impact of aligning to group preferences on alignment for other values including harmlessness or helpfulness, and using pre-training model initializations for the GPO module
+              <p>GPO provides a framework for few-shot alligning LLMs to group preferences. GPO significantly outperforms prior methods as measured by alignment score for group preference alignment while requiring no gradient updates to the base LLM. We find that GPO is also more sample efficient, improving alignment score significantly more than baseline methods while using fewer samples, and is effective across multiple popular open-source LLMs of various parameter and pre-training dataset scales. Future work should explore adapting GPO with other datasets (especially non-mulitiple choice format), the impact of aligning to group preferences on alignment for other values including harmlessness or helpfulness, and using pre-training model initializations for the GPO module.
               </p>
             </div>
 
@@ -607,6 +712,8 @@ response = chat_completion.choices[0].message.content</pre>
         <li id="opinionqa">Shibani Santurkar, Esin Durmus, Faisal Ladhak, Cinoo Lee, Percy Liang, and Tatsunori Hashimoto. "Whose opinions do language models reflect?" arXiv preprint arXiv:2303.17548 (2023).</li>
         <li id="aligner-7b"><a href="https://huggingface.co/aligner/aligner-7b-v1.0">aligner-7b-v1.0</a></li>
         <li id="aligner-20k"><a href="https://huggingface.co/datasets/aligner/aligner-20K">aligner-20K</a></li>
+        <li id="aligner-code"><a href="https://github.com/Aligner2024/aligner">Aligner Code</a></li>
+        <li id="gpo-code"><a href="https://github.com/jamqd/Group-Preference-Optimization">Group Preference Optimization Code</a></li>
       </ol>
     </div>
   </div>
