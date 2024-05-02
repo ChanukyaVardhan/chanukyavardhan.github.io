@@ -16,7 +16,7 @@
         content="Group Preference Optimization: Few-Shot Alignment of Large Language Models.">
   <meta name="keywords" content="Groue Preference Optimization, GPO, LLM, Large Language Models">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Group Preference Optimization: Few-Shot Alignment of Large Language Models</title>
+  <title>Group Preference Alignment</title>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
         rel="stylesheet">
@@ -43,7 +43,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Group Preference Optimization: Few-Shot Alignment of Large Language Models</h1>
+          <h1 class="title is-1 publication-title">Group Aligner</h1>
           <div class="is-size-5 publication-authors">
             <span class="author-block">
               <a href="https://www.linkedin.com/in/chanukyavardhan/">Chanukya Vardhan Gujjula</a><sup>1</sup>,
@@ -97,48 +97,294 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            Many applications of large language models (LLMs), ranging from chatbots to creative writing, require nuanced subjective judgments that can differ significantly across different groups.
-Existing alignment algorithms can be expensive to align for each group, requiring prohibitive amounts of group-specific preference data and computation for real-world use cases. 
+            LLMs are tricky. add anything else from LLM
+            It's better to have preference according to group (and even better individual) for various reasons.
+            Recent works like gpo tried doing this with few shot methods using LLM. This can be flimpsy, context length less, and is targeted at the use-case when there is low data per group.
+            We aim to do better group alignment, and for large data per group.
+            Recently, there has been work on aligner which aligns LLM outputs to safer and harmless reposnses. 
+            We leverage that aligner and add adapter modules for each group and get a group aligner for each group. This corrects the outputs from LLM for that group.
+            This fixes x and y. We wanted to create a model with the ability to train on large data, and be more robust.
+            Qualitatively, we saw that our responses are more robust. (TODO: train gpo also if possible on descriptive sentences and aligner with objective answers)
+            RLHF?? 
           </p>
-          <p>
-             <center>This brings forth the key question studied in this work: </center>
- <center><b><i>How do we efficiently adapt LLMs to align closely with the opinions of specific interest groups?</i> </center></b>
-          </p>
-          
-          <p>
-            We introduce Group Preference Optimization (GPO), an alignment framework that steers language models to preferences of individual groups in a few-shot manner.
-In GPO, we augment the base LLM with an independent transformer module trained to predict the preferences of a group for the LLM generations.
-For few-shot learning, we parameterize this module as an in-context autoregressive transformer and train it via meta-learning on several groups. 
-          </p>
-          <p>
-           We empirically validate the efficacy of GPO through rigorous evaluations using LLMs with varied sizes on three human opinion adaptation tasks. 
-            These tasks involve adapting to the preferences of US demographic groups, global countries, and individual users. Our results demonstrate that GPO not only aligns models more accurately but also requires fewer group-specific preferences, 
-            and less training and inference computing resources, outperforming existing strategies such as in-context steering and fine-tuning methods.
-          </p>
-          <img src="static/gpo_2.gif" alt="gpo" class="image">
+        </div>
+        <hr>
 
-          <figure>
-            <img src="static/main_fig_cap.png" alt="GPO" style="width:100%">
-          </figure>
-          <h2 class="title is-3">Background</h2>
-          LLM may disproportionately over-represent some groups and under-represent others. Although guiding an LLM using prompts such as "Speak as xxx" can enhance its performance, this approach is limited and can sometimes lead to misrepresentation.
-          <figure>
-            <img src="static/gpo_background.png" alt="qualitative example for climate question" style="width:100%">
-          </figure>
-          
-          
-          While prior methods including supervised fine-tuning, prompting, and context learning have been useful in many alignment settings, these methods could perform poorly and be computationally expensive for aligning LLM outputs to group preferences, especially in low data regimes.
+        <h2 class="title is-3">Background</h2>
+          <div class="content has-text-justified">
+            <p>
+              LLM may disproportionately over-represent some groups and under-represent others. Although guiding an LLM using prompts such as "Speak as xxx" can enhance its performance, this approach is limited and can sometimes lead to misrepresentation.
+              <figure>
+                <img src="static/gpo_background.png" alt="qualitative example for climate question" style="width:100%">
+              </figure>
+              
+              
+              While prior methods including supervised fine-tuning, prompting, and context learning have been useful in many alignment settings, these methods could perform poorly and be computationally expensive for aligning LLM outputs to group preferences, especially in low data regimes.
+            </p>
+          </div>
 
+        <h2 class="title is-3" style="text-align: center;">Data</h2>
+          <div class="content has-text-justified">
+            <p>We used existing datasets as well as generated our own datasets as part of this project.</p>
+
+            <h3 class="title is-4">Existing Datasets</h3>            
+            GPO benchamarks group alignment on the below recent survey datasets
+            <ul>
+              <li>
+                <strong>OpinionsQA (Steering)</strong>: Spans 22 US demographic groups (e.g., income, political ideology, race, sex) through 500 multiple-choice questions. For each question and group pair, we have a distribution of answer options
+              
+              </li>
+              <li>
+                <strong>GlobalOpinionsDataset</strong>: Contains 2,554 multiple-choice questions answered by participants from 14 countries, covering topics such as politics, media, technology, religion, race, and ethnicity.
+              </li>
+            </ul>
+
+            <p>[Add links to papers and further discussion about OpinionsQA and GlobalOpinionsDataset, including distribution and overall statistics.]</p>
+
+            <h3 class="title is-4">Synthetic Data Generation</h3>
+              <p>We explored aligning conversations that did not offer options by creating synthetic data for the questions available in the datasets above.</p>
+
+              <h4 class="title is-5">Methodology</h4>
+              <p>We utilized GPT-3.5-turbo to generate this descriptive dataset using prompts similar to those used to steer the LLM in OpinionsQA, which were also utilized in GPO.</p>
+
+              <h4 class="title is-5">Data Format</h4>
+              <p>Data needed for training the aligner is structured as Q-A-C, where:</p>
+              <ul>
+                <li><strong>Q</strong> is the Question,</li>
+                <li><strong>A</strong> is the Answer generated, and</li>
+                <li><strong>C</strong> is the Correction that the aligner is expected to generate.</li>
+              </ul>
+
+              <h4 class="title is-5">Group Interpretation Map</h4>
+              <p>We use a group interpretation map to provide context for the GPT model to generate responses appropriate to specific groups:</p>
+              <pre>
+                {
+                  "Democrat": "Consider yourself as a United States citizen. In today's United States politics, you are Democrat.",
+                  "Republican": "Consider yourself as a United States citizen. In today's United States politics, you are Republican.",
+                  "$100,000 or more": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is $100,000 or more.",
+                  "Less than $30,000": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is less than $30,000.",
+                  "Overall": "Consider yourself as a United States citizen."
+                }
+              </pre>
+
+              <h4 class="title is-5">Example Data Generation Process</h4>
+              <p>Data generation follows this sequence:</p>
+              <ol>
+                <li>Set the appropriate group context based on the group interpretation map.</li>
+                <li>Generate responses using GPT-3.5-turbo by feeding a question and interpreting the context.</li>
+                <li>Store the generated responses for further training and analysis.</li>
+              </ol>
+
+              <h3 class="title is-4">Discussion on Chosen Groups</h3>
+              <p>We chose specific groups such as income and political orientation based on their disparate nature, as demonstrated in the OpinionsQA data analysis.</p>
+
+              <h3 class="title is-4">Exploring Option Descriptions</h3>
+              <p>Despite generating data using available options shown to GPT, results were unsatisfactory. We also attempted to generate answers without specific options, prompting GPT to produce answers based directly on group context or as a generic US citizen.</p>
+
+              <p>[Further details and examples of generated data and comparisons between methods can be added here.]</p>
+            </div>
+
+
+          <h2 class="title is-3">Data_complete</h2>
+
+          We used existing datasets as well as generated our own datasets as a part of this project. 
+
+          Dataset used in GPO is OpinionsQA (Steering) and GlobalOpinionsDataset. It benchamarks group alignment on two recent survey datasets: (1) OpinionQA (Santurkar et al., 2023), which spans 22 US demographic groups (e.g. income, political ideology, race, and sex) across 500 multiple-choice questions and (2) GlobalOpinionQA (Durmus et al., 2023), which contains multiplechoice questions answered by participants from 14 countries, amounting to 2,554 questions which cover various topics including politics, media, technology, religion, race, and ethnicity.
+
+         
+          ADD PAPER LINKS. OpinionsQA is collected using these US surveys, write about this data. It has data collected for various groups, and its objective, along with its overall statistics. Write about distirbution of this bein available as well.
           
+          To compare our method against existing GPO method, we confined to the original dataset and ran our method against this dataset.
+
+          Along with this, we wanted to explore aligning conversations that didn't have options. The above datasets only offered objective responses and thus, we created synthetic data for the same questions available.
+          We used GPT-3.5-turbo to generate this desciptive dataset using similar prompts that are used to steer the LLM in OpinionsQA which were also used in GPO.
+
+          To generate dataset to train aligner, we need it in the format of Q-A-C. Where Q is the question, A is the answer generated and C is the correction that the aligner is expected to generate. 
+          For generating correction C, we give the interpretation of the group as the context for GPT to generate the answer according to the group. For generating A, we don't give any specific group context, instead,
+          we just ask GPT to answer as United States citizen.
+          
+          group_intepretation_map = {
+            "Democrat": "Consider yourself as a United States citizen. In today's United States politics, you are Democrat.",
+            "Republican": "Consider yourself as a United States citizen. In today's United States politics, you are Republican.",
+            "$100,000 or more": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is $100,000 or more.",
+            "Less than $30,000": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is less than $30,000.",
+            "Overall": "Consider yourself as a United States citizen."
+        }        
+          system_prompt = f"""
+          {group_intepretation_map[Group]} 
+          Answer this survey question from your perspective in a brief sentence.
+          Don't start the answer with your description or group affiliation.
+          The answer should reflect your concerns and life experiences relevant to the topic."
+      """
+      user_prompt = f"Question: {Question}."
+
+      completion = client.chat.completions.create(
+          model="gpt-3.5-turbo",
+          messages=[
+              {"role": "system", "content": system_prompt},
+              {"role": "user", "content": user_prompt}
+          ],
+          temperature=0.5
+      )
+      generated_content = completion.choices[0].message.content.
+
+      Example responses:
+      1. Question:
+      2. Answer:
+      3. Republican Correction:
+      4. Democrat Correction:
+
+
+
+      
+      DATA WHY WE CHOSE THESE GROUPS. opinions qa elaborated on a few set of groups among with income group was one. We choose republic vs this given we thought they are very disparate.
+
+      ## WRITE IF NECESSARY BEFORE NO OTPION DATA OR SKIP ALTOGETHER
+      We also explored option descriptions, generated the dataset and wanted to compare GPO against aligner. BuT
+      VERBAL: GENERATED USING THE AVAILABLE OPTIONS SHOWN TO GPT TO ELABORATE IT FURTHER. BUT IT DIDN'T LOOK GOOD (WE CAN SHOW EXAMPLES IF REQUIRED).
+      NEXT WE DIDN'T GIVE ANY OPTIONS BUT JUST TOOK THE QUESTION AND ASKED IT TO GENERATE THE ANSWER DIRECTLY BASED ON THE GROUP AND AS A GENERIC US CITIZEN.
+
           
           
 <hr>
           <h2 class="title is-3">Method</h2>
           <p>
-            GPO performs few-shot supervised learning of human preference scores over LLM outputs. These predicted group preference scores can be utilized within downstream LLM alignment methods such as best-of-n sampling or PPO.
+
+            CODEBASEEE - deepspeed, aligner, tech stack etc.,
+            Talk a bit more about aligner. Give example. SHow the input, output, training and inference formats. Q, A and C. 
+            
+            We wanted to explore two ways of group preference alignment.
+            First is a single stage training, including all the basic safety plus the group preference data per group. Q, A, C format: (TOODO: train from scratch if possible)            
+              a) all safety + single group data
+              b) all safty + all group data with different prompts
+            Second is a two stage training, where we have all the basic safety pretrained in a aligner and we only use adapter modules per group to induct group specific preferences in that module.
+              a) single group 
+              b) all group with different prompts at a time (TODO2: different prompts, 2k data, all groups trained at once)
+            how llms confuse or have the ability to steer according to the prompt vs keeping it clean and making sure it has only one group knowledge and the trianing is also kind of indepent in a. 
+            i.e., you add more groups indepedently, second has overall less paramenter,s but need retraining wehn new group data is added.
+
+
+            Comparison:
+            To compare against GPO method, we also trained Aligner with options data that is used in GPO and 
+            Method of GPO:
+            1. generate embedding
+            2. 
+
+            Ablation:
+            We also wanted to explore RLHF methods and compare it against the above SFT methods and GPO.
+            DPO:
+            Write somehting about DPO. The format is different, we only give prompt here and expect it to generate a corrected output instead of feeding it to a different model for correction like in the case of Aligner
+
+            First single stage training:
+              a) 
+              b)
+            Second is a two stage training: We have pretrained a DPO from scratch using X data as per the aligner paper to have a fair comparision to the aligner pretrained model for this stage.
+              a) single group
+              b) all groups with different prompts.  -- potential disdavntage, affter training for n groups, direclty training for n+1th gorup might not reuslt sin same result as training for n+1 gorups. so,  first one might be simpler
+
+
+            observations:
+            Unlike in Aligner, DPO needs finetuning of the entire LLM. So, we tried to compare it fairly by dividing the safety dataset into 10 parts and using only that per group.
+            to compare it compute wise.
+            Also, subjective vs objective comparisons.
+          
+          </p>
+          <h2 class="title is-3">Challenges</h2>
+          <p>
+          Data generation:
+          1. LLM doesn't give output in common format. 
+          POSTPROCESS TO GET IN NECESSARY FORMATS FOR TRAINING. LLM OUTPUTS REQUIRE A LOT OF CLEANING TO GET INTO DESIRED FORMAT - LEARNING.
+          2. Need to tune the temperature accordingly.
+          3. Had to experiemnt with prompt a lot to ensure it doesn't give generic repsonses for all groups and
+           it doesn't give garbase or too obvious answers like, "Given I am a democrat, according to my view, ..." etc.,
+           It was really tricky to get the correct prompt to generate the data
+          4. Low training data per group, thus, can't train models liek Aligner from scratch and have to stick to finetuning.
+          5. Incomplete sentences: {
+            "key": "LEGALIMG_W41",
+            "question": "In order to maintain the strength of the U.S. economy over the next 30 years, do you think that legal immigration will need to be",
+            "answer": "Maintained at current levels",
+            "correction": "Maintained at current levels"
+        },{
+          "key": "LOCALELECT_W29",
+          "question": "The next question is about local elections, such as for mayor or a school board. Do you",
+          "answer": "Always vote in local elections",
+          "correction": "Never vote in local elections"
+      }
+
+          Huge models. For available gpu.
+          1. memory isn't enough to load such large models
+          2. deepspped zero stages exploring for tradeoffs between time and memory
+          3. max_length generation is going out of memory, had to fix that well
+          4. load in low bit resolution (peft) and train in 32 bit
+          5. lora was necessary
+          6. Multiple codebases, training details for dpo not completely there in aligner etc.,
+
+
           </p>
 
+          <h2 class="title is-3">Results</h2>
+          <p>
 
+            TODO: single inference of safety+group in both aligner and gpo.
+
+            Metrics:
+            qualitative - show a few examples of republican etc.,
+            quantitative - rouge metric, gpt3.5-turbo as evaluator
+            1. wandb plots - rewards for dpo model, losses.
+            2. parameter wise
+            3. compute wise
+            4. stable training
+
+            Overall Results:
+            Aligner no options data results:
+            
+            After training the aligner for 4 different groups, here are a few examples of our results:
+
+            Example responses:
+            1. Question:
+            2. Answer:
+            3. Republican Correction:
+            4. Democrat Correction:
+            5. 
+            6. 
+            
+            
+          Comparision results:
+          Aligner Answers:
+
+          GPO Answers:
+
+          Rouge Scores:
+
+
+            Highlight 1:
+            Plots. 
+            When we train with splits across groups, i.e., 80% of groups with all questions are trained and 20% of groups are evaluated, the alignment score is high both with 22 groups and with a subset of 4 groups. When 
+            but when we train with split across questions and we train for all groups i.e., 80% of all questions for all groups are trained and 20% are evaluated, the alignment score is low.
+
+            We conjecture that this is due to bias towards questions that have already been seen.
+
+            Insert a nice image with rectangels drawn across the excel sheet to show the split and maybe even numbers aaccordingly.
+
+
+
+            Highlight 2: classification vs regression
+            We have to highlight that the results are biased towards GPO. This is because, GPO predicts the probability distribution of the options and not the direct text. We evaluate the rouge score between the highest probable option and the ground truth option. Here, the generations are fixed. Thus, the model is not burdened with generating the exact option content like in the case of aligner. 
+            Example:
+            Q: Women question
+            A: No difference
+            GT: No difference
+            Aligner: It's not directly a realted concern.
+
+            so, as we can see, although both the models are intending the same thing, the score for GPO inherently is setup to give higher score over Aligner model.
+
+
+            Highlight 3:
+            Compared to GPO, in our model, every time a new group is added, we need to train our adapter module. However, The solution mentioned in GPO for long prompts requires running embeddings for all Q and A in the beginning. During the inference time, the context is generated by appending all the embeddings for selected number of Q-As of that group. This will add overhead every time a new group is tested.
+ 
+
+
+          </p>
            <figure>
             <img src="static/gpo_transformer.png" alt="qualitative example for climate question" style="width:100%">
           </figure>
