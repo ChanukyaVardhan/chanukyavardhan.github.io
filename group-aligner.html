@@ -2,6 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
   <style>
     
 
@@ -11,6 +15,76 @@
     height: auto;
 }
       </style>
+  <style>
+        .response-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .option-label {
+            margin-right: 10px;
+            width: 110px; /* Adjust width based on content */
+        }
+
+        .bar-container {
+            width: 300px;
+            background-color: #f1f1f1;
+            margin: 8px 0;
+            color: black;
+        }
+
+        .bar {
+            height: 20px;
+            color: white;
+            text-align: right;
+            padding-right: 5px;
+            line-height: 20px; /* Center text vertically */
+        }
+
+        .independent { background-color: #808080; width: 50%; } /* Gray */
+        .all { background-color: #ffdd59; width: 30%; } /* Yellow */
+        .republicans { background-color: #ff6961; width: 10%; } /* Red */
+        .democrats { background-color: #779ecb; width: 40%; } /* Blue */
+
+        .independent_11 { background-color: #808080; width: 11%; } /* Gray */
+        .independent_28 { background-color: #808080; width: 28%; } /* Gray */
+        .independent_30 { background-color: #808080; width: 30%; } /* Gray */
+        .independent_31 { background-color: #808080; width: 31%; } /* Gray */
+
+        .all_14 { background-color: #ffdd59; width: 14%; } /* Yellow */
+        .all_27 { background-color: #ffdd59; width: 27%; } /* Yellow */
+        .all_29 { background-color: #ffdd59; width: 29%; } /* Yellow */
+        .all_30 { background-color: #ffdd59; width: 30%; } /* Yellow */
+
+        .republicans_17 { background-color: #ff6961; width: 17%; } /* Red */
+        .republicans_22 { background-color: #ff6961; width: 22%; } /* Red */
+        .republicans_39 { background-color: #ff6961; width: 39%; } /* Red */
+
+        .democrats_5 { background-color: #779ecb; width: 5%; } /* Blue */
+        .democrats_15 { background-color: #779ecb; width: 15%; } /* Blue */
+        .democrats_33 { background-color: #779ecb; width: 33%; } /* Blue */
+        .democrats_47 { background-color: #779ecb; width: 47%; } /* Blue */
+        
+        .legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .legend-box {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+  </style>
   <meta charset="utf-8">
   <meta name="description"
         content="Group Preference Optimization: Few-Shot Alignment of Large Language Models.">
@@ -125,55 +199,140 @@
 
         <h2 class="title is-3" style="text-align: center;">Data</h2>
           <div class="content has-text-justified">
-            <p>We used existing datasets as well as generated our own datasets as part of this project.</p>
-
-            <h3 class="title is-4">Existing Datasets</h3>            
-            GPO benchamarks group alignment on the below recent survey datasets
-            <ul>
-              <li>
-                <strong>OpinionsQA (Steering)</strong>: Spans 22 US demographic groups (e.g., income, political ideology, race, sex) through 500 multiple-choice questions. For each question and group pair, we have a distribution of answer options
-              
-              </li>
-              <li>
-                <strong>GlobalOpinionsDataset</strong>: Contains 2,554 multiple-choice questions answered by participants from 14 countries, covering topics such as politics, media, technology, religion, race, and ethnicity.
-              </li>
-            </ul>
-
-            <p>[Add links to papers and further discussion about OpinionsQA and GlobalOpinionsDataset, including distribution and overall statistics.]</p>
-
-            <h3 class="title is-4">Synthetic Data Generation</h3>
-              <p>We explored aligning conversations that did not offer options by creating synthetic data for the questions available in the datasets above.</p>
-
-              <h4 class="title is-5">Methodology</h4>
-              <p>We utilized GPT-3.5-turbo to generate this descriptive dataset using prompts similar to those used to steer the LLM in OpinionsQA, which were also utilized in GPO.</p>
-
-              <h4 class="title is-5">Data Format</h4>
-              <p>Data needed for training the aligner is structured as Q-A-C, where:</p>
+            <h3 class="title is-4">Datasets</h3>
+              <p>We evaluate our method on two datasets.</p>
               <ul>
-                <li><strong>Q</strong> is the Question,</li>
-                <li><strong>A</strong> is the Answer generated, and</li>
-                <li><strong>C</strong> is the Correction that the aligner is expected to generate.</li>
+                <li>
+                  <strong>Survey Dataset - OpinionQA</strong>: OpinionQA<a href="#opinionqa"><sup>[1]</sup></a> is a recent survey dataset designed to facilitate research in opinion-based question answering systems. It comprises a diverse collection of survey questions sourced from real-world data, capturing a wide range of opinions across various demographics. OpinionQA spans 22 US demographic groups (e.g. income, political ideology, race, and sex) across 500 multiple-choice questions.
+                </li>
+                <li>
+                  <strong>Synthetic Dataset - DescriptiveOpinionQA</strong>: Since OpinionQA is constructed based on the survey questions which have options, we looked out for aligning conversations that have better descriptive answers rather than simple options. To achieve this, we construct a synthetic dataset using GPT-3.5-Turbo to generate a descriptive version for the same questions available in the OpinionQA dataset. We use prompts similar to those used in steering the LLM in OpinionQA to generate descriptive responses as alternatives to the options provided in the survey question of OpinionQA.
+                </li>
               </ul>
 
-              <h4 class="title is-5">Group Interpretation Map</h4>
-              <p>We use a group interpretation map to provide context for the GPT model to generate responses appropriate to specific groups:</p>
-              <pre>
-                {
-                  "Democrat": "Consider yourself as a United States citizen. In today's United States politics, you are Democrat.",
-                  "Republican": "Consider yourself as a United States citizen. In today's United States politics, you are Republican.",
-                  "$100,000 or more": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is $100,000 or more.",
-                  "Less than $30,000": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is less than $30,000.",
-                  "Overall": "Consider yourself as a United States citizen."
-                }
-              </pre>
+            <p>The datasets are processed to get to question-answer-correction (Q-A-C) format following Aligner<a href="#opinionqa"><sup>[2]</sup></a>. Q is the question that is directly picked from from OpinionQA. A is the response generated by an LLM. C is the corrected response that the Aligner is supposed to generate to align the answer of the LLM to the respective group.</p>
+            <br>
 
-              <h4 class="title is-5">Example Data Generation Process</h4>
+            <h4 class="title is-5">OpinionQA</h4>
+              An example question answer distribution from the dataset is shown below. <br>
+              <strong>Question:</strong> How much, if at all, do you think the ease with which people can legally obtain guns contributes to gun violence in the country today?
+              <ol type="A">
+                <li>A great deal</li>
+                <li>A fair amount</li>
+                <li>Not too much</li>
+                <li>Not at all</li>
+              </ol>
+              <strong>Response Distribution</strong>
+              <div class="response-item">
+                  <span class="option-label">A great deal</span>
+                  <div class="bar-container">
+                      <div class="bar all_30">30%</div>
+                      <div class="bar democrats_47">47%</div>
+                      <div class="bar republicans_17">17%</div>
+                      <div class="bar independent_28">28%</div>
+                  </div>
+              </div>
+              <div class="response-item">
+                  <span class="option-label">A fair amount</span>
+                  <div class="bar-container">
+                      <div class="bar all_29">29%</div>
+                      <div class="bar democrats_33">33%</div>
+                      <div class="bar republicans_22">22%</div>
+                      <div class="bar independent_31">31%</div>
+                  </div>
+              </div>
+              <div class="response-item">
+                  <span class="option-label">Not too much</span>
+                  <div class="bar-container">
+                      <div class="bar all_27">27%</div>
+                      <div class="bar democrats_15">15%</div>
+                      <div class="bar republicans_39">39%</div>
+                      <div class="bar independent_30">30%</div>
+                  </div>
+              </div>
+              <div class="response-item">
+                  <span class="option-label">Not at all</span>
+                  <div class="bar-container">
+                      <div class="bar all_14">14%</div>
+                      <div class="bar democrats_5">5%</div>
+                      <div class="bar republicans_22">22%</div>
+                      <div class="bar independent_11">11%</div>
+                  </div>
+              </div>
+              <div class="legend">
+                  <div class="legend-box">
+                      <div class="color-box" style="background-color: #ffdd59;"></div>
+                      <span>Overall</span>
+                  </div>
+                  <div class="legend-box">
+                      <div class="color-box" style="background-color: #779ecb;"></div>
+                      <span>Democrats</span>
+                  </div>                  
+                  <div class="legend-box">
+                      <div class="color-box" style="background-color: #ff6961;"></div>
+                      <span>Republicans</span>
+                  </div>
+                  <div class="legend-box">
+                      <div class="color-box" style="background-color: #808080;"></div>
+                      <span>Independent</span>
+                  </div>
+              </div>
+
+              <br>
+
+
+              <p>Since the OpinionQA dataset provides distributions statistics of the options selected at group level, and the overall statistics; we select the answer with high probablity from the overall group as the answer from the LLM. The correction for each group is the option with high probability from the answer distribution for the respective question. This would let Aligner correct the responses to generate group opinions.</p>
+
+              An example question-answer-correction generated for Democrat and Republican groups is shown below.<br>
+              <strong>Question:</strong> How much, if at all, do you think the ease with which people can legally obtain guns contributes to gun violence in the country today?<br>
+              <strong>Answer:</strong> A great deal<br>
+              <strong>Correction (Democrat):</strong> A great deal<br>
+              <strong>Correction (Republican):</strong> Not too much<br>
+              <strong>Correction (Independent):</strong> A fair amount<br><br>
+
+            <h4 class="title is-5">DescriptiveOpinionQA</h4>
+              <p>To generate better descriptive responses, we leveraged GPT-3.5-Turbo and constructed synthetic answers and corrections for each group. We use the following group level prompts and get a response for each question available in the OpinionQA dataset.</p>
+              <pre>group_intepretation_map = {
+  "Overall": "Consider yourself as a United States citizen.",
+  "Democrat": "Consider yourself as a United States citizen. In today's United States politics, you are Democrat.",
+  "Republican": "Consider yourself as a United States citizen. In today's United States politics, you are Republican.",
+  "$100,000 or more": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is $100,000 or more.",
+  "Less than $30,000": "Consider yourself as a United States citizen. Your total family annual income from all sources before taxes is less than $30,000."
+}</pre>
+
               <p>Data generation follows this sequence:</p>
               <ol>
                 <li>Set the appropriate group context based on the group interpretation map.</li>
-                <li>Generate responses using GPT-3.5-turbo by feeding a question and interpreting the context.</li>
-                <li>Store the generated responses for further training and analysis.</li>
+                <li>Generate responses using GPT-3.5-Turbo by feeding a question and interpreting the context.</li>
+                <li>Store the generated responses for each group to all the questions.</li>
               </ol>
+
+              <pre>
+system_prompt = f"""
+    {group_intepretation_map[Group]} 
+    Answer this survey question from your perspective in a brief sentence.
+    Don't start the answer with your description or group affiliation.
+    The answer should reflect your concerns and life experiences relevant to the topic."
+"""
+user_prompt = f"Question: {Question}."
+
+chat_completion = openai_client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ],
+    temperature=0.5
+)
+response = chat_completion.choices[0].message.content</pre>
+
+              <p>The responses generated for the question in the <i>Overall</i> group is considered as the default response (answer) from the language model, followed by the responses for individual groups as the corrections to the overall answers.</p>
+
+              An example question-answer-correction generated for Democrat and Republican groups is shown below.<br>
+              <strong>Question:</strong> How much, if at all, do you think the ease with which people can legally obtain guns contributes to gun violence in the country today?<br>
+              <strong>Answer:</strong> I believe that the ease with which people can legally obtain guns in the United States does contribute to gun violence, and I am concerned about the impact it has on the safety of our communities.<br>
+              <strong>Correction (Democrat):</strong> The ease of legally obtaining guns in the United States definitely contributes to the high rates of gun violence we see in our country today, and stricter gun control measures are necessary to address this issue.<br>
+              <strong>Correction (Republican):</strong> I believe that the ease of legally obtaining guns should be balanced with ensuring proper background checks and mental health evaluations to prevent gun violence in our country.<br>
 
               <h3 class="title is-4">Discussion on Chosen Groups</h3>
               <p>We chose specific groups such as income and political orientation based on their disparate nature, as demonstrated in the OpinionsQA data analysis.</p>
@@ -184,8 +343,7 @@
               <p>[Further details and examples of generated data and comparisons between methods can be added here.]</p>
             </div>
 
-
-          <h2 class="title is-3">Data_complete</h2>
+        <h2 class="title is-3">Data_complete</h2>
 
           We used existing datasets as well as generated our own datasets as a part of this project. 
 
@@ -496,6 +654,22 @@
   </div>
 </section>
  -->
+
+<section class="section" id="References">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+      <h2 class="title">References</h2>
+      <ol>
+        <li id="opinionqa">Shibani Santurkar, Esin Durmus, Faisal Ladhak, Cinoo Lee, Percy Liang, and Tatsunori Hashimoto. "Whose opinions do language models reflect?" arXiv preprint arXiv:2303.17548 (2023).</li>
+        <li id="aligner">Ji, Jiaming, Boyuan Chen, Hantao Lou, Donghai Hong, Borong Zhang, Xuehai Pan, Juntao Dai, and Yaodong Yang. "Aligner: Achieving efficient alignment through weak-to-strong correction." arXiv preprint arXiv:2402.02416 (2024).</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+
+
 
 
 
