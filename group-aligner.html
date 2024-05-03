@@ -240,8 +240,13 @@
         <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
+              Advancements in Large Language Models (LLMs) have highlighted the critical need for aligning their outputs with the diverse preferences of user groups. The bias and misrepresentation risks should be addressed. Traditional methods such as supervised fine-tuning and strategic prompting often fall short in efficiency or effectiveness. Our research introduces a novel Group Preference Aligner (GPA) model that significantly enhances group-specific alignment by leveraging a two-stage process. Initially, we use a universal aligner to adjust LLM outputs towards universally beneficial attributes like safety and harmlessness. Subsequently, we fine-tune this model using only adapter modules tailored to the specific preferences of individual groups, enhancing the LLM's ability to cater to nuanced group characteristics, while increasing the parameters marginally. We introduce a new synthetic DescriptiveOpinionQA dataset to model more descriptive group preferences beyond multiple-choice options in OpinionQA dataset. We demonstrate the effectiveness of our approach using the OpinionQA and our synthetic DescriptiveOpinionQA datasets. Our findings show that the GPA model aligns more closely with group-specific preferences compared to existing models.
+
+              <!-- Add no. or percent increase that we see compared to GPO on average as a result. 
+
               LLMs are tricky. add anything else from LLM
               It's better to have preference according to group (and even better individual) for various reasons.
+              
               Recent works like gpo tried doing this with few shot methods using LLM. This can be flimpsy, context length less, and is targeted at the use-case when there is low data per group. Further, it expects the inputs as a multiple choice question with options and predicts a answer distribution on options for that group(and can be used as a reward model later to train another llm but doens't direclty output the descriptive answers)
               We aim to do better group alignment, and for large data per group.
               Recently, there has been work on aligner which aligns LLM outputs to safer and harmless reposnses. 
@@ -251,7 +256,7 @@
 
               Our project aims to develop a more efficient framework for achieving group-specific alignment in
   LLMs, focusing on reducing the number of parameters and training time required as well as make it more robust and not depend more on context. We propose a two-stage alignment process that initially addresses common preferences across groups (such as safety and completion) before fine-tuning the model to align with the nuanced preferences of
-  individual groups
+  individual groups -->
 
             </p>
           </div>
@@ -259,7 +264,7 @@
 <hr>
         <h2 class="title is-3">Background</h2>
           <div class="content has-text-justified">
-              <p>Large Language Models (LLMs) frequently exhibit biased representations, disproportionately emphasizing or neglecting certain groups. Directive prompts like <i>"Speak as [specific identity or role]"</i> offer a partial solution by providing contextual cues, yet they risk misrepresentation and have inherent limitations. Historically, methods such as supervised fine-tuning, strategic prompting, and learning from contextual examples have been used to align LLM outputs with user or group preferences. These methods, however, often prove to be inefficient and ineffective.</p>
+              <p>LLMs frequently exhibit biased representations, disproportionately emphasizing or neglecting certain groups. Directive prompts like <i>"Speak as [specific identity or role]"</i> offer a partial solution by providing contextual cues, yet they risk misrepresentation and have inherent limitations. Historically, methods such as supervised fine-tuning, strategic prompting, and learning from contextual examples have been used to align LLM outputs with user or group preferences. These methods, however, often prove to be inefficient and ineffective.</p>
               
               <h3 class="title is-4">Group Preference Optimization</h3>
                 <p>The recent Group Preference Optimization (GPO)<a href="#gpo" class="citation-link"></a> approach tries to address these challenges. GPO leverages a framework that aligns LLM outputs with the preferences of various groups using a few-shot learning paradigm. This method uses an auxiliary transformer module that predicts the preferences of a group based on the outputs of a base LLM among the options provided.</p>
@@ -320,7 +325,7 @@
         <h2 class="title is-3" style="text-align: center;">Data</h2>
           <div class="content has-text-justified">
             <h3 class="title is-4">Datasets</h3>
-              <p>We evaluate our method on two datasets.</p>
+              <p>We use the below two datasets.</p>
               <ul>
                 <li>
                   <strong>Survey Dataset - OpinionQA</strong>: OpinionQA<a href="#opinionqa" class="citation-link"></a> is a recent survey dataset designed to facilitate research in opinion-based question answering systems. It comprises a diverse collection of survey questions sourced from real-world data, capturing a wide range of opinions across various demographics. OpinionQA spans 22 US demographic groups (e.g. income, political ideology, race, and sex) across 500 multiple-choice questions.
@@ -459,9 +464,7 @@ response = chat_completion.choices[0].message.content</pre>
               <!-- <p>We chose specific groups such as income and political orientation based on their disparate nature, as demonstrated in the OpinionQA data analysis.</p> -->
 
               <h3 class="title is-4">Exploring Option Descriptions</h3>
-              <p>Despite generating data using available options shown to GPT, results were unsatisfactory. We also attempted to generate answers without specific options, prompting GPT to produce answers based directly on group context or as a generic US citizen.</p>
-
-              <p>[Further details and examples of generated data and comparisons between methods can be added here.]</p>
+              <p>Despite generating data using available options shown to GPT, results were unsatisfactory.</p>
           </div>
           
 <hr>
@@ -471,7 +474,7 @@ response = chat_completion.choices[0].message.content</pre>
                 <p>
                   Our method builds on the Aligner model. It has two stages.</p>
                 <ol>
-                  <li><strong>Universal Alignment:</strong> Initially, a universal aligner model is trained to address common preferences across groups, focusing on universally applicable aspects such as safety and harmlessness. For this project, we used a pretrained <i>Aligner-7B</i> <a href="#aligner-7b" class="citation-link"></a> model. This model was pretrained on 20K aligner (Q-A-C) dataset<a href="#aligner-20k" class="citation-link"></a> that was constructed using prompted models like GPT-4, LLama2-70B-Chat and also involving human annotators ensuring the corrections align with established principles emphasizing helpfulness and harmlessness.</li>
+                  <li><strong>Universal Alignment:</strong> Initially, a universal aligner model is trained to address common preferences across groups, focusing on universally applicable aspects such as safety and harmlessness. For this project, we used a pretrained <i>Aligner-7B</i> <a href="#aligner-7b" class="citation-link"></a> model. This model was pretrained on 20K aligner (Q-A-C) dataset<a href="#aligner-20k" class="citation-link"></a> that was constructed using prompted models like GPT-4, LLama2-70B-Chat and also involving human annotators ensuring the corrections align with established principles emphasizing safety, helpfulness and harmlessness.</li>
                   <!-- For this project, we used a pretrained Aligner model (7B parameters). This Aligner model is a result of finetuning Alpaca model on 20k training data generated by GPT-4 (Verify and add more details).  -->
                   <li><strong>Group-Specific Fine-Tuning:</strong> The above model is fine-tuned by integrating adapter modules tailored to the specific preferences of individual groups, allowing for precise alignment with nuanced group characteristics. We work with two different settings.
                     <ul>
@@ -486,7 +489,7 @@ response = chat_completion.choices[0].message.content</pre>
                 Since GPO is trained by providing the question and with the options and predicts the distribution among the options, this is not directly comparable to our GPA methodology. Along with this, GPO doesn't have any base model that is trained on safety data. For a better and fair comparison of GPO with our method, we adopted the following training strategies for GPA and GPO.
                 <ol>
                   <li><strong>GPA-Objective:</strong> We use the same training stategy for GPA as mentioned earlier, but now train it to predict the options available in OpinionQA instead of generating completely descriptive responses. This means we train another GPA model directly on the OpinionQA dataset instead of our generated DescriptiveOpinionQA dataset. For the (Q, A, C) training pairs, the survery question is given as the Q, the answer from the overall distribution with maximum distribution is the A, and the group specific answer with maximum probability as the correction C. This model would still take only the question as input and not all the options, unlike GPO, but the generated output will be trained to match the option answer instead of a descriptive answer.</li>
-                  <li><strong>S-GPO (GPO trained with DPO trained LLM as base):</strong> Our GPA has an universal alignment stage first that aligns the LLM model towards safety and harmlessness. Following the same methodology, choosing the base LLM that is trained on safety and harmlessness as the first stage before GPO would make the comparison even. The Aligner model<a href="#aligner" class="citation-link"></a> was compared to a finetuned alpaca model following the DPO and PPO methodologies trained on the same Aligner dataset. So, we use this DPO finetuned alpaca model as the universal alignment satge before GPO. However, the checkpoints for these are not made available. We replicated the same by finetuning alpaca-7b model on aligner-20K dataset using DPO. For the second stage, we now train GPO on this DPO finetuned alpaca model using OpinionQA dataset following the same training strategy used in GPO<a href="#gpo" class="citation-link"></a>. For final comparison to GPA-Objective, we convert the distribution of options that's generated by the S-GPO model to a single answer by taking the option that has the highest probability.</li>
+                  <li><strong>S-GPO (Safe GPO):</strong> Our GPA has an universal alignment stage first that aligns the LLM model towards safety and harmlessness. Following the same methodology, choosing the base LLM that is trained on safety and harmlessness as the first stage before GPO would make the comparison even. The Aligner model<a href="#aligner" class="citation-link"></a> was compared to a finetuned alpaca model following the DPO<a href="#dpo" class="citation-link"></a> and PPO<a href="#ppo" class="citation-link"></a> methodologies trained on the same Aligner dataset. So, we use this DPO finetuned alpaca model as the universal alignment satge before GPO. However, the checkpoints for these are not made available. We replicated the same by finetuning alpaca-7b model on aligner-20K safety dataset using DPO, which serves as the base for the second stage. For the second stage, we now train GPO on this DPO finetuned alpaca model using OpinionQA dataset following the same training strategy used in GPO<a href="#gpo" class="citation-link"></a>. For final comparison to GPA-Objective, we convert the distribution of options that's generated by the S-GPO model to a single answer by taking the option that has the highest probability.</li>
                 </ol>
 
                 <p>By following the above changes to training strategies to start from a similar first stage base, the second stage training should give good idea about the differences among the GPA and GPO approaches.</p>
@@ -506,12 +509,12 @@ response = chat_completion.choices[0].message.content</pre>
                 </ul>
 
               <h3 class="title is-4">Evaluation Metrics</h3>
-                <p>We evaluate the performance of all the trained models through qualitative and quantative estimates. For qualitative evaluation, we manually evalaute generated responses on the evaluation set and compare its alignment with the correction comparted to the answer. For quantitative evaluation we chose the Rouge metric dueo to its relevant in assessing teh quality of descriptive outputs. The Rouge metric measures the overlap of n-grams between the generated responses and a set of reference responses, providing a robust inidicator of textual similarity. NOTE THAT ROUGE SCORE IS NOT THE OPTIMAL METRIC FOR EVALUATION, ESPECIALLY FOR THIS DESCRIPTIVE ANSWERS. PROBABLY FOR SIMPLE OPTIONS THAT CAN BE BETTER AS MINIMAL WORDS.</p>
+                <p>We evaluate the performance of all the trained models through qualitative and quantitative estimates. For qualitative evaluation, we manually evaluate generated responses on the evaluation set and compare its alignment with the correction compared to the answer. For quantitative evaluation we chose the Rouge metric due to its relevant in assessing the quality of descriptive outputs. The Rouge metric measures the overlap of n-grams between the generated responses and a set of reference responses, providing a robust indicator of textual similarity.  It is important to note, however, that while the ROUGE metric offers a useful estimate of similarity, it is not the ideal metric for evaluating all aspects of response quality. Particularly for more descriptive answers, this value may be lower, indicating that ROUGE can sometimes fail to capture the nuanced content and creativity of the responses.</p>
 
               <h3 class="title is-4">GPA-Descriptive</h3>
                 <p>Following are some qualitative examples from the individual adapters:</p>
                 <strong>Question:</strong> Thinking about long-range foreign policy goals, how much priority, if any, do you think reducing legal immigrations into the US should be given?
-                <table border="2">
+                <table border="2" style="border-collapse: collapse; border-radius: 10px; overflow: hidden;">
                     <tr>
                         <th style="text-align: center;"></th>
                         <th style="text-align: center; color: #779ecb;">Democrat</th>
@@ -533,7 +536,7 @@ response = chat_completion.choices[0].message.content</pre>
                 </table>
 
                 <strong>Question:</strong> How much, if at all, do you think the following proposals would do to reduce economic inequality in the U.S.? Expanding government benefits for the poor.
-                <table border="2">
+                <table border="2" style="border-collapse: collapse; border-radius: 10px; overflow: hidden;">
                     <tr>
                         <th style="text-align: center;"></th>
                         <th style="text-align: center; color: #779ecb;">Less than $30,000</th>
@@ -610,12 +613,9 @@ response = chat_completion.choices[0].message.content</pre>
                 <p><strong>Temperature Tuning:</strong> Adjusting the generation temperature of the LLM was crucial to balance creativity and relevance in the responses, ensuring that the data generated met our expectations.</p>
                 <p><strong>Prompt Engineering:</strong> Crafting the right prompts was a big challenge. We needed to avoid generic responses that could apply uniformly across all groups as well as overly scripted or obvious answers, such as "Given I am a democrat, according to my view, ...". Finding the precise phrasing to elicit useful and varied responses required extensive experimentation.</p>
                 <p><strong>Sparse Data for Each Group:</strong> The limited amount of training data available for each group made it impractical to train models like Aligner from scratch. Thus, we were focused primarily on fine-tuning existing models.</p>
-
-                <p><strong>Still Left out Data Challenges:</strong></p>
-
                 <p><strong>Handling Incomplete Sentences:</strong> We encountered data examples with incomplete sentences. These cause trouble in training aligner given it doesn't know the full question to answer as expected by the ground truth. 
                 Examples include:
-                <pre>Incomplete sentences: {
+                <pre>{
   "key": "LEGALIMG_W41",
   "question": "In order to maintain the strength of the U.S. economy over the next 30 years, do you think that legal immigration will need to be",
   "answer": "Maintained at current levels",
@@ -627,36 +627,32 @@ response = chat_completion.choices[0].message.content</pre>
   "answer": "Always vote in local elections",
   "correction": "Never vote in local elections"
 }</pre></p>
-                <p><strong>REFINE THIS PONT</strong>: Maybe generating data for all groups and testing out explicitly?</p>
 
               <h3 class="title is-4"> Hardware and Computational Challenges</h3>
-                <p><strong>Memory Limitations:</strong> The size of the models often exceeded the available GPU memory, posing significant challenges in managing model loads and operations.</p>
+                <p><strong>Out-of-Memory Issues:</strong>
+                  <ul>
+                    <li>The size of the models often exceeded the available GPU memory, posing significant challenges in managing model loads and operations.</li>
+                    <li>Managing the maximum generation length without exceeding memory capacities required experimentation too.</li>
+                  </ul>
+                </p>
                 <p><strong>Exploring DeepSpeed Zero Stages:</strong> We had to experiment with different DeepSpeed Zero optimization stages to find the right balance between memory usage and computational time.</p>
-                <p><strong>Out-of-Memory Issues:</strong> Managing the maximum generation length without exceeding memory capacities required experimentation too.</p>
                 <p><strong>Precision and Efficiency:</strong> To manage these large models effectively, we loaded them in lower bit resolutions (e.g., using 16-bit precision) for more memory-efficient training, while maintaining calculations in 32-bit to preserve accuracy.</p>
-                <p><strong>Necessity of LoRA:</strong> Implementing Low-Rank Adaptations (LoRA) was essential to modify large models without extensively retraining them, thus saving on computational resources.</p>
+                <!-- <p><strong>Necessity of LoRA:</strong> Implementing Low-Rank Adaptations (LoRA) was essential to modify large models without extensively retraining them, thus saving on computational resources.</p> -->
                 <!-- IS BELOW NECESSARY??
                 Multiple Codebases and Documentation Gaps: Integrating multiple codebases and navigating incomplete documentation, especially for specific training details in models like Aligner and DeepSpeed's configurations, added complexity to our development process. -->
             </div>
           
 <hr>
-          <h2 class="title is-3">Discussion and Future Work</h2>
+          <h2 class="title is-3">Future Work</h2>
             <div class="content has-text-justified">
-              <p>GPO provides a framework for few-shot alligning LLMs to group preferences. GPO significantly outperforms prior methods as measured by alignment score for group preference alignment while requiring no gradient updates to the base LLM. We find that GPO is also more sample efficient, improving alignment score significantly more than baseline methods while using fewer samples, and is effective across multiple popular open-source LLMs of various parameter and pre-training dataset scales. Future work should explore adapting GPO with other datasets (especially non-mulitiple choice format), the impact of aligning to group preferences on alignment for other values including harmlessness or helpfulness, and using pre-training model initializations for the GPO module.
-              </p>
+              <ul>
+                <li><strong>Enhanced Evaluation Metrics:</strong> Incorporate language models to supplement the ROUGE metrics for a more comprehensive evaluation of model performance.</li>
+                <li><strong>Data Diversity and Scale:</strong> Develop methodologies to automatically generate additional questions based on existing datasets, thereby enriching the dataset to cover a broader range of group preferences. Investigate the impact of utilizing larger and more varied datasets to enhance the robustness and generalizability of our findings. </li>
+                <li><strong>Other Alignment Strategies:</strong> Experiment with techniques to perform a direct one-stage group preference alignment and compare its efficiency against the two-stage approach proposed in our study. Limited dataset size has previously restricted this analysis, but with access to more comprehensive data, a detailed comparison could be achievable. We can also experiment with PPO in the initial stage of GPO model training to make our comparative analysis thorough.</li>
+                <li><strong>Individual Preference Modeling:</strong> We will also focus on adapting our approach to model individual preferences. This will involve developing innovative architectures and creating new datasets from user interactions to better understand and align to individual needs.</li>
+              </ul>
             </div>
-
 <hr>
-<!--           <h2 class="title is-3">References</h2>
-            <div class="content has-text-justified">
-              <ol>
-                <li id="gpo">Zhao, Siyan, John Dang, and Aditya Grover. "Group preference optimization: Few-shot alignment of large language models." arXiv preprint arXiv:2310.11523 (2023).</li>
-                <li id="aligner">Ji, Jiaming, Boyuan Chen, Hantao Lou, Donghai Hong, Borong Zhang, Xuehai Pan, Juntao Dai, and Yaodong Yang. "Aligner: Achieving efficient alignment through weak-to-strong correction." arXiv preprint arXiv:2402.02416 (2024).</li>
-                <li id="opinionqa">Shibani Santurkar, Esin Durmus, Faisal Ladhak, Cinoo Lee, Percy Liang, and Tatsunori Hashimoto. "Whose opinions do language models reflect?" arXiv preprint arXiv:2303.17548 (2023).</li>
-                <li id="aligner-7b"><a href="https://huggingface.co/aligner/aligner-7b-v1.0">aligner-7b-v1.0</a></li>
-                <li id="aligner-20k"><a href="https://huggingface.co/datasets/aligner/aligner-20K">aligner-20K</a></li>
-              </ol>
-            </div> -->
       </div>
     </div>
   </div>
@@ -673,6 +669,8 @@ response = chat_completion.choices[0].message.content</pre>
         <li id="opinionqa">Shibani Santurkar, Esin Durmus, Faisal Ladhak, Cinoo Lee, Percy Liang, and Tatsunori Hashimoto. "Whose opinions do language models reflect?" arXiv preprint arXiv:2303.17548 (2023).</li>
         <li id="aligner-7b"><a href="https://huggingface.co/aligner/aligner-7b-v1.0">aligner-7b-v1.0</a></li>
         <li id="aligner-20k"><a href="https://huggingface.co/datasets/aligner/aligner-20K">aligner-20K</a></li>
+        <li id="dpo">Rafailov, Rafael, Archit Sharma, Eric Mitchell, Christopher D. Manning, Stefano Ermon, and Chelsea Finn. "Direct preference optimization: Your language model is secretly a reward model." Advances in Neural Information Processing Systems 36 (2024).</li>
+        <li id="ppo">Schulman, John, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov. "Proximal policy optimization algorithms." arXiv preprint arXiv:1707.06347 (2017).</li>
         <li id="aligner-code"><a href="https://github.com/Aligner2024/aligner">Aligner Code</a></li>
         <li id="gpo-code"><a href="https://github.com/jamqd/Group-Preference-Optimization">Group Preference Optimization Code</a></li>
       </ol>
